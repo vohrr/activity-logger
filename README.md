@@ -1,7 +1,7 @@
 
 # **Activity Logger**
 
-### Activity Logger is a simple application that provides a journal-entry style GUI 
-### for tracking and/or logging anything you want. 
+#### Activity Logger is a simple application that provides a journal-entry style GUI 
+#### for tracking and/or logging anything you want. 
 
 
