@@ -12,15 +12,15 @@ typedef struct Log {
   size_t size;
   size_t capacity;
   char *name;
-  log_entry_t *entries;
+  log_entry_t **entries;
 } log_t;
 
 //not 100% sure what all we'll need yet
 log_t  *log_create(char *name);
 void log_update();
 void log_delete();
-log_t *log_load();
 void log_unload();
+void log_free(log_t *log);
 
 
 void log_entry_create();

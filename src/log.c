@@ -23,3 +23,16 @@ log_t *log_create(char *name) {
   return log;  
 }
 
+void log_free(log_t *log) {
+  if(log->name != NULL) { free(log->name); }
+ 
+  if(log->entries != NULL) {
+    for(size_t i = 0; i < log->size; i++) {
+      free(log->entries[i]); 
+    }
+  }
+
+  free(log);
+}
+
+

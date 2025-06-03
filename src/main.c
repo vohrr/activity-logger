@@ -11,8 +11,7 @@ static void print_click_me() {
   }
   g_print("First Log name: %s\n", first_log->name);
   g_print("First log size: %ld\n", first_log->size);
-  free(first_log->name);
-  free(first_log);	
+  log_free(first_log);
 }
 
 static void activate(GtkApplication *app) {
