@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Activity Logger
+Comment=Log activities of any kind
+Exec=~./workspace/activity_logger/
+Terminal=true
+Type=Application
+Categories=Utility;

@@ -15,12 +15,12 @@ static void print_click_me() {
 }
 
 static void activate(GtkApplication *app) {
-  GtkWindow *window = GTK_WINDOW(gtk_application_window_new (app));
+  GtkWindow *window = GTK_WINDOW(gtk_application_window_new(app));
   gtk_window_set_title(window, "Activity Logger");
   gtk_window_set_default_size(window, 1920, 1080);
 
   GtkWidget *button = gtk_button_new_with_label("Try Me!\n");
-  g_signal_connect(button, "clicked", G_CALLBACK (print_click_me), NULL);
+  g_signal_connect(button, "clicked", G_CALLBACK(print_click_me), NULL);
   gtk_window_set_child(window, button);
 
   gtk_window_present(window);
@@ -29,9 +29,9 @@ static void activate(GtkApplication *app) {
 int main(int argc, char **argv) {
   GtkApplication *app = gtk_application_new(NULL, G_APPLICATION_HANDLES_OPEN); //4 
   int status;
-  g_signal_connect(app, "activate", G_CALLBACK (activate), NULL);
+  g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   printf("Activity Logger Running...");
-  status = g_application_run (G_APPLICATION (app), argc, argv);
+  status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);
   return status;
 }
