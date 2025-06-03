@@ -15,15 +15,15 @@ static void print_click_me() {
 }
 
 static void activate(GtkApplication *app) {
-  GtkWidget *window = gtk_application_window_new (app);
-  gtk_window_set_title((GtkWindow *)window, "Activity Logger");
-  gtk_window_set_default_size((GtkWindow *)window, 1920, 1080);
+  GtkWindow *window = GTK_WINDOW(gtk_application_window_new (app));
+  gtk_window_set_title(window, "Activity Logger");
+  gtk_window_set_default_size(window, 1920, 1080);
 
   GtkWidget *button = gtk_button_new_with_label("Try Me!\n");
   g_signal_connect(button, "clicked", G_CALLBACK (print_click_me), NULL);
-  gtk_window_set_child((GtkWindow *)window, button);
+  gtk_window_set_child(window, button);
 
-  gtk_window_present((GtkWindow *)window);
+  gtk_window_present(window);
 }
 
 int main(int argc, char **argv) {
