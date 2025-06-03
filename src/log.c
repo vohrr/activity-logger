@@ -19,6 +19,7 @@ log_t *log_create(char *name) {
   log->size = 0;
   log->capacity = sizeof(log);
   strcpy(log->name, name);
+  log->entries = NULL;
 
   return log;  
 }

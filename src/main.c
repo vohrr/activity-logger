@@ -5,7 +5,7 @@
 //GtkWidget *widget, gpointer data
 static void print_click_me() {
   g_print("I have been clicked!\n");
-  log_t *first_log = log_create("Low Level");
+  log_t *first_log = log_create("Test Log");
   if (first_log == NULL) {
     g_print("Failed to create log\n");
   }
