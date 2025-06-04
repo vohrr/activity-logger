@@ -1,0 +1,33 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>  
+  <object id="window" class="GtkWindow">
+    <property name="title">Activity Logger</property>
+    <property name="default-width">1280</property>
+    <property name="default-height">720</property>
+    <child>
+      <object id="mainbox" class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object id="newlog" class="GtkButton">
+            <property name="label">Create New Log</property>
+          </object>
+        </child>
+        <child>
+          <!-- <object id="mainstack" class="GtkStack"> -->
+            <!-- <child type="page"> -->
+          <object id="page1" class="GtkBox">
+          <property name="name">newlog</property>
+          <child> 
+              <object id="log_name_entry" class="GtkEntry">
+              <property name="name">Log Name</property>
+              </object>
+           </child>
+          </object>
+          <!-- </child> 
+          </object> -->
+      </child> 
+      </object>
+  </child>
+  </object>
+</interface>
