@@ -3,8 +3,9 @@
 #include <gtk/gtk.h>
 #include "log.h"
 //GtkWidget *widget, gpointer data
-static void print_click_me() {
-  g_print("I have been clicked!\n");
+static void new_log_click(GtkWidget *widget, gpointer user_data) {
+  g_print("New log clicked!\n");
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage");
   log_t *first_log = log_create("Test Log");
   if (first_log == NULL) {
     g_print("Failed to create log\n");
@@ -13,7 +14,16 @@ static void print_click_me() {
   g_print("First log size: %ld\n", first_log->size);
   log_free(first_log);
 
+}
 
+static void open_log_click(GtkWidget *widget, gpointer user_data) {
+  g_print("Open log clicked!\n"); 
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "loglistpage");
+  
+}
+
+static void save_log_click() {
+  return;
 }
 
 static void activate(GtkApplication *app) {
@@ -31,9 +41,14 @@ static void activate(GtkApplication *app) {
 
   gtk_window_set_application(GTK_WINDOW(window), app);
 
+  GObject *stack = gtk_builder_get_object(builder, "mainstack");
+  //bind button events
   GObject *button = gtk_builder_get_object(builder, "newlog");
-  g_signal_connect(button, "clicked", G_CALLBACK(print_click_me), NULL);
-  
+  g_signal_connect(button, "clicked", G_CALLBACK(new_log_click), stack);
+
+  button = gtk_builder_get_object(builder, "openlog");
+  g_signal_connect(button, "clicked", G_CALLBACK(open_log_click), stack);
+
   gtk_widget_set_visible (GTK_WIDGET(window), TRUE);
 
   g_object_unref(builder);

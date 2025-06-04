@@ -1,12 +1,12 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
+
 <interface>  
-  <object id="window" class="GtkWindow">
+  <object id="window" class="GtkWindow"> <!-- start window -->
     <property name="title">Activity Logger</property>
     <property name="default-width">1280</property>
     <property name="default-height">720</property>
     <child>
-      <object id="mainbox" class="GtkBox">
+      <object id="mainbox" class="GtkBox"> <!-- start mainbox --> 
         <property name="orientation">vertical</property>
         <child>
           <object id="newlog" class="GtkButton">
@@ -14,20 +14,50 @@
           </object>
         </child>
         <child>
-          <!-- <object id="mainstack" class="GtkStack"> -->
-            <!-- <child type="page"> -->
-          <object id="page1" class="GtkBox">
-          <property name="name">newlog</property>
-          <child> 
-              <object id="log_name_entry" class="GtkEntry">
-              <property name="name">Log Name</property>
-              </object>
-           </child>
+          <object id="openlog" class="GtkButton">
+            <property name="label">Open a Log</property>
           </object>
-          <!-- </child> 
-          </object> -->
-      </child> 
-      </object>
+          </child>
+        <child>
+          <object id="mainstack" class="GtkStack"> <!-- start stack --> 
+            <property name="transition-type">slide-left-right</property>
+            <child>
+              <object id="page1" class="GtkStackPage">
+                <property name="name">viewlogpage</property>
+                <property name="child">
+                  <object id="viewlogpage" class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="hexpand">1</property>
+                    <property name="vexpand">1</property>
+                    <child>
+                      <object id="viewlogpagetitle" class="GtkLabel">
+                        <property name="label">View Log</property>
+                      </object>
+                    </child>
+                  </object>
+                  </property>
+              </object>
+              </child>
+            <child>
+              <object id="page2" class="GtkStackPage">
+                <property name="name">loglistpage</property>
+                <property name="child">
+                <object id="loglistpage" class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+                  <child>
+                    <object id="loglistpagetitle" class="GtkLabel">
+                    <property name="label">Log List</property>
+                    </object>
+                  </child>
+                </object>
+              </property>
+              </object>
+            </child>
+          </object> <!-- end stack -->
+        </child>
+        </object> <!-- end mainbox -->
   </child>
-  </object>
+  </object> <!-- end window -->
 </interface>
