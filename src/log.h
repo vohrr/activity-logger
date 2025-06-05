@@ -15,6 +15,8 @@ typedef struct Log {
   log_entry_t **entries;
 } log_t;
 
+char **log_list_get();
+void log_list_free(char **log_list);
 //not 100% sure what all we'll need yet
 log_t  *log_create(char *name);
 void log_update();

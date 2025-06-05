@@ -20,9 +20,20 @@ static void new_log_click(GtkWidget *widget, gpointer user_data) {
 static void open_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("Open log clicked!\n"); 
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "loglistpage");
+  char **log_list = log_list_get();
+  if(log_list != NULL) {
+    g_print("Loading logs..\n");
+    size_t i = 0; 
+    while(i < sizeof(log_list)) {
+      char *log = log_list[i];
+      if(log != NULL) { 
+        g_print("Log: %s\n", log);
+      }
+      i++;
+    }
+  }
 
-
-  
+  log_list_free(log_list);
 }
 
 static void save_log_click() {
@@ -34,7 +45,6 @@ static void activate(GtkApplication *app) {
   //initialize window
   GtkBuilder *builder = gtk_builder_new(); 
   gtk_builder_add_from_file(builder, "src/ui/main.ui", NULL);
-  
 
   GObject *window = gtk_builder_get_object(builder, "window");
   if(window == NULL) {
