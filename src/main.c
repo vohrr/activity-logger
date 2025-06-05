@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "log.h"
+
 //GtkWidget *widget, gpointer data
 static void new_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("New log clicked!\n");
@@ -19,6 +20,8 @@ static void new_log_click(GtkWidget *widget, gpointer user_data) {
 static void open_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("Open log clicked!\n"); 
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "loglistpage");
+
+
   
 }
 

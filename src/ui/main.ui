@@ -22,7 +22,7 @@
           <object id="mainstack" class="GtkStack"> <!-- start stack --> 
             <property name="transition-type">slide-left-right</property>
             <child>
-              <object id="page1" class="GtkStackPage">
+              <object id="page1" class="GtkStackPage"> <!-- single log view start-->
                 <property name="name">viewlogpage</property>
                 <property name="child">
                   <object id="viewlogpage" class="GtkBox">
@@ -36,10 +36,10 @@
                     </child>
                   </object>
                   </property>
-              </object>
+              </object> <!-- single log view end-->
               </child>
             <child>
-              <object id="page2" class="GtkStackPage">
+              <object id="page2" class="GtkStackPage"> <!-- log list page start -->
                 <property name="name">loglistpage</property>
                 <property name="child">
                 <object id="loglistpage" class="GtkBox">
@@ -53,7 +53,7 @@
                   </child>
                 </object>
               </property>
-              </object>
+              </object> <!-- log list page end -->
             </child>
           </object> <!-- end stack -->
         </child>
