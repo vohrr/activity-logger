@@ -2,6 +2,7 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include "log.h"
+#include "actions.h"
 
 void new_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("New log clicked!\n");
@@ -33,9 +34,9 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
       char *log = log_list[i];
       if(log != NULL) { 
         g_print("Log: %s\n", log);
-      GtkWidget *button = gtk_button_new_with_label(log);
-      gtk_box_append(box, button); 
-        //TODO: append the view_log_click() callback event to these buttons
+        GtkWidget *button = gtk_button_new_with_label(log);
+        gtk_box_append(box, button); 
+        g_signal_connect(button, "clicked", G_CALLBACK(view_log_click), button);
       }
       i++;
     }
@@ -45,6 +46,8 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void view_log_click(GtkWidget *widget, gpointer user_data) {
+  const char* label = gtk_button_get_label(GTK_BUTTON(user_data));
+  g_print("Viewing log: %s\n", label);
   return;
 }
 

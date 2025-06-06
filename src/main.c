@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtk/gtk.h>
-#include "log.h"
 #include "actions.h"
 
 static void activate(GtkApplication *app) {
