@@ -3,7 +3,6 @@
 #include <gtk/gtk.h>
 #include "log.h"
 
-//GtkWidget *widget, gpointer data
 static void new_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("New log clicked!\n");
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage");
@@ -11,15 +10,21 @@ static void new_log_click(GtkWidget *widget, gpointer user_data) {
   if (first_log == NULL) {
     g_print("Failed to create log\n");
   }
-  g_print("First Log name: %s\n", first_log->name);
-  g_print("First log size: %ld\n", first_log->size);
   log_free(first_log);
-
 }
 
-static void open_log_click(GtkWidget *widget, gpointer user_data) {
-  g_print("Open log clicked!\n"); 
-  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "loglistpage");
+static void log_list_click(GtkWidget *widget, gpointer user_data) {
+  g_print("log list clicked!\n"); 
+  
+  GtkWidget *page = gtk_stack_get_child_by_name(GTK_STACK(user_data), "loglistpage");
+  if(page == NULL) {
+    g_print("Could not find log list page");
+  }
+  gtk_stack_set_visible_child(GTK_STACK(user_data), page);
+  GtkBox *box = GTK_BOX(page);
+
+  if(gtk_widget_get_first_child(page) != gtk_widget_get_last_child(page)) { return; }
+
   char **log_list = log_list_get();
   if(log_list != NULL) {
     g_print("Loading logs..\n");
@@ -28,9 +33,12 @@ static void open_log_click(GtkWidget *widget, gpointer user_data) {
       char *log = log_list[i];
       if(log != NULL) { 
         g_print("Log: %s\n", log);
+      GtkWidget *button = gtk_button_new_with_label(log);
+      gtk_box_append(box, button);
       }
       i++;
     }
+    //we want to implemented a list or grid of GObjects that are clickable, clicking them opens 
   }
 
   log_list_free(log_list);
@@ -60,7 +68,7 @@ static void activate(GtkApplication *app) {
   g_signal_connect(button, "clicked", G_CALLBACK(new_log_click), stack);
 
   button = gtk_builder_get_object(builder, "openlog");
-  g_signal_connect(button, "clicked", G_CALLBACK(open_log_click), stack);
+  g_signal_connect(button, "clicked", G_CALLBACK(log_list_click), stack);
 
   gtk_widget_set_visible (GTK_WIDGET(window), TRUE);
 
