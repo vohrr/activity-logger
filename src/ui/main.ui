@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<interface>  
+<interface>
   <object id="window" class="GtkWindow"> <!-- start window -->
     <property name="title">Activity Logger</property>
     <property name="default-width">1280</property>
     <property name="default-height">720</property>
     <child>
-      <object id="mainbox" class="GtkBox"> <!-- start mainbox --> 
+      <object id="mainbox" class="GtkBox"> <!-- start mainbox -->
         <property name="orientation">vertical</property>
         <child>
           <object id="newlog" class="GtkButton">
@@ -19,7 +19,7 @@
           </object>
           </child>
         <child>
-          <object id="mainstack" class="GtkStack"> <!-- start stack --> 
+          <object id="mainstack" class="GtkStack"> <!-- start stack -->
             <property name="transition-type">slide-left-right</property>
             <child>
               <object id="page1" class="GtkStackPage"> <!-- single log view start-->

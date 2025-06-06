@@ -34,11 +34,11 @@ static void log_list_click(GtkWidget *widget, gpointer user_data) {
       if(log != NULL) { 
         g_print("Log: %s\n", log);
       GtkWidget *button = gtk_button_new_with_label(log);
-      gtk_box_append(box, button);
+      gtk_box_append(box, button); 
+        //TODO: append the view_log_click() callback event to these buttons
       }
       i++;
     }
-    //we want to implemented a list or grid of GObjects that are clickable, clicking them opens 
   }
 
   log_list_free(log_list);
@@ -76,17 +76,17 @@ static void activate(GtkApplication *app) {
 /*  GTK_WINDOW(gtk_application_window_new(app));
   gtk_window_set_title(window, "Activity Logger");
   gtk_window_set_default_size(window, 1920, 1080);
- 
-  //initialize grid 
+
+  //initialize grid
   GtkWidget *grid = gtk_grid_new();
   gtk_window_set_child(window, grid);
- 
+
   //initialize button and attach to grid
   GtkWidget *button = gtk_button_new_with_label("New Log\n");
   */
  // gtk_grid_attach(GTK_GRID(grid), button, 1, 0, 1, 1);
-  
-  //display 
+
+  //display
   //gtk_window_present(window);
 }
 
