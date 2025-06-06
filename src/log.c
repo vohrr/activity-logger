@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 log_t *log_create(char *name) {
-  
+
   log_t *log = malloc(sizeof(log_t));
   if(log == NULL) {
     return NULL;
@@ -14,7 +14,7 @@ log_t *log_create(char *name) {
   log->name = malloc(sizeof(char) * strlen(name));
   if(log->name == NULL) {
     free(log);
-    return NULL; 
+    return NULL;
   }
 
   log->size = 0;
@@ -22,15 +22,15 @@ log_t *log_create(char *name) {
   strcpy(log->name, name);
   log->entries = NULL;
 
-  return log;  
+  return log;
 }
 
 void log_free(log_t *log) {
   if(log->name != NULL) { free(log->name); }
- 
+
   if(log->entries != NULL) {
     for(size_t i = 0; i < log->size; i++) {
-      free(log->entries[i]); 
+      free(log->entries[i]);
     }
   }
 
@@ -38,7 +38,7 @@ void log_free(log_t *log) {
 }
 
 
-char **log_list_get() {
+log_list_t *log_list_get() {
   static const char *LOG_DIR = "logs/";
   struct dirent *de;
   DIR *dr = opendir(LOG_DIR);
@@ -46,8 +46,8 @@ char **log_list_get() {
     printf("Could not open logs directory\n");
     return NULL;
   }
-
-  char **log_list = calloc(10, sizeof(char *));
+  size_t capacity = 10;
+  char **log_list = calloc(capacity, sizeof(char *));
   if(log_list == NULL) {
     return NULL;
   }
@@ -56,13 +56,13 @@ char **log_list_get() {
   size_t filecount = 0;
   while((de = readdir(dr)) != NULL) {
      if( strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) { continue; }
-     if(filecount == sizeof(log_list)) {
-       log_list = calloc(sizeof(log_list) * 2, sizeof(char *));     
+     if(filecount == capacity) {
+       capacity = capacity*2;
+       log_list = (char **)realloc(log_list, sizeof(char *)*capacity);
      }
 
      char *name = malloc(sizeof(char) * strlen(de->d_name) + 1);
      if(name == NULL) {
-      printf("Failed to allocate memory for %s file\n", de->d_name);
       return NULL;
      }
 
@@ -71,19 +71,31 @@ char **log_list_get() {
      filecount++;
   }
   closedir(dr);
+
+  log_list_t *log_files = malloc(sizeof(log_list_t));
+  if(log_files == NULL) {
+    return NULL;
+  }
+  log_files->capacity = capacity;
+  log_files->filecount = filecount;
+  log_files->logs = log_list;
+
   printf("Filecount: %ld\n",filecount);
-  return log_list;
+
+  return log_files;
 }
 
-void log_list_free(char **log_list) {
+
+void log_list_free(log_list_t *log_list) {
   size_t i = 0;
-  while(i < sizeof(log_list)) {
-      char *log = log_list[i];
-      if(log != NULL) { 
+  while(i < log_list->filecount) {
+      char *log = log_list->logs[i];
+      if(log != NULL) {
         free(log);
       }
       i++;
     }
+  free(log_list->logs);
   free(log_list);
 }
 

@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+typedef struct LogList {
+  size_t capacity;
+  size_t filecount;
+  char **logs;
+} log_list_t;
+
 typedef struct LogEntry {
   size_t id;
   char *message;
@@ -15,8 +21,8 @@ typedef struct Log {
   log_entry_t **entries;
 } log_t;
 
-char **log_list_get();
-void log_list_free(char **log_list);
+log_list_t *log_list_get();
+void log_list_free(log_list_t *log_list);
 //not 100% sure what all we'll need yet
 log_t  *log_create(char *name);
 void log_update();

@@ -26,17 +26,17 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 
   if(gtk_widget_get_first_child(page) != gtk_widget_get_last_child(page)) { return; }
 
-  char **log_list = log_list_get();
+  log_list_t *log_list = log_list_get();
   if(log_list != NULL) {
     g_print("Loading logs..\n");
-    size_t i = 0; 
-    while(i < sizeof(log_list)) {
-      char *log = log_list[i];
+    size_t i = 0;
+    while(i < log_list->filecount) {
+      char *log = log_list->logs[i];
       if(log != NULL) { 
         g_print("Log: %s\n", log);
         GtkWidget *button = gtk_button_new_with_label(log);
         gtk_box_append(box, button); 
-        g_signal_connect(button, "clicked", G_CALLBACK(view_log_click), button);
+        g_signal_connect(button, "clicked", G_CALLBACK(view_log_click), user_data);
       }
       i++;
     }
@@ -46,9 +46,13 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void view_log_click(GtkWidget *widget, gpointer user_data) {
-  const char* label = gtk_button_get_label(GTK_BUTTON(user_data));
+  const char* label = gtk_button_get_label(GTK_BUTTON(widget));
   g_print("Viewing log: %s\n", label);
-  return;
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage"); 
+
+  //log_t *log = log_load();
+  //etc do stuff here to load existing log and log entries
+  //also need to bind to UI after, programatically add elements like above
 }
 
 void save_log_click() {
