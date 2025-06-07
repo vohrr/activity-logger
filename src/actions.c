@@ -46,11 +46,15 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void view_log_click(GtkWidget *widget, gpointer user_data) {
-  const char* label = gtk_button_get_label(GTK_BUTTON(widget));
+  char* label = gtk_button_get_label(GTK_BUTTON(widget));
   g_print("Viewing log: %s\n", label);
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage"); 
 
-  //log_t *log = log_load();
+  log_t *log = log_load(label);
+
+  if (log == NULL) {
+    g_print("Failed to load data for %s\n", label);
+  }
   //etc do stuff here to load existing log and log entries
   //also need to bind to UI after, programatically add elements like above
 }

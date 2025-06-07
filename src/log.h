@@ -23,19 +23,21 @@ typedef struct Log {
 
 log_list_t *log_list_get();
 void log_list_free(log_list_t *log_list);
-//not 100% sure what all we'll need yet
 log_t  *log_create(char *name);
+log_t *log_load(char *name);
+void log_name_set(log_t *log, char *name);
+void log_free(log_t *log);
 void log_update();
 void log_delete();
 void log_unload();
-void log_free(log_t *log);
 
 
+log_entry_t *log_entry_load();
+void log_entry_list_get(log_t *log);
+void log_entry_unload();
 void log_entry_create();
 void log_entry_update();
 void log_entry_delete();
-log_entry_t *log_entry_load();
-void log_entry_unload();
 
 
 

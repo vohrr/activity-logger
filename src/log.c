@@ -25,17 +25,22 @@ log_t *log_create(char *name) {
   return log;
 }
 
-void log_free(log_t *log) {
-  if(log->name != NULL) { free(log->name); }
-
-  if(log->entries != NULL) {
-    for(size_t i = 0; i < log->size; i++) {
-      free(log->entries[i]);
-    }
-  }
-
-  free(log);
+void log_entry_list_get(log_t *log) {
 }
+
+log_t *log_load(char *name) {
+  // need to find file by name then parse all the entries into the entries log
+  log_t *log = malloc(sizeof(log_t));
+  if(log == NULL) {
+    return NULL;
+  }
+  //ensure file with name exists, return if not  
+  
+  log_name_set(log, name);
+  log_entry_list_get(log);
+  return log;
+}
+
 
 
 log_list_t *log_list_get() {
@@ -99,4 +104,34 @@ void log_list_free(log_list_t *log_list) {
   free(log_list);
 }
 
+log_t *log_new() {
+  
+  log_t *log = malloc(sizeof(log_t));
+  if(log == NULL) {
+    return NULL; 
+  }
+  return log;
+}
 
+void log_name_set(log_t *log, char *name) {
+   if(log == NULL || name == NULL) { return; }
+
+  log->name = malloc(sizeof(char)* strlen(name) +1);
+  if(log->name == NULL) {
+    return;
+  }
+
+  strcpy(log->name, name);
+}
+
+void log_free(log_t *log) {
+  if(log->name != NULL) { free(log->name); }
+
+  if(log->entries != NULL) {
+    for(size_t i = 0; i < log->size; i++) {
+      free(log->entries[i]);
+    }
+  }
+
+  free(log);
+}
