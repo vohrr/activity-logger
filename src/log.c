@@ -16,11 +16,33 @@ log_t *log_create(char *name) {
 }
 
 void log_entry_list_get(log_t *log) {
-
+  if(log == NULL || log->name == NULL) {
+    return;
+  }
+  char *filename =  malloc(sizeof(char) * (strlen("logs/") + strlen(log->name)+1));
+  if(filename == NULL) {
+    return; 
+  }
+  strcpy(filename, "logs/");
+  strcat(filename, log->name);
+  printf("Opening %s\n", filename);
+  FILE *file = fopen(filename, "a+");
+  if(file == NULL) {
+    printf("Could not open file: %s\n", log->name);
+    return;
+  }
+  //TODO: parse file properly 
+  int ch = fgetc(file);
+  while(ch != EOF) {
+    printf("%c", ch);
+    ch = fgetc(file);
+  }
+  fclose(file);
+  free(filename);
 }
 
 log_t *log_load(char *name) {
-  // need to find file by name then parse all the entries into the entries log
+  //TODO need to find file by name then parse all the entries into the entries log
   log_t *log = log_new(); //ensure file with name exists, return if not  
   log_name_set(log, name);
   log_entry_list_get(log);
