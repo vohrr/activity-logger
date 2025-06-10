@@ -31,7 +31,7 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
     g_print("Loading logs..\n");
     size_t i = 0;
     while(i < log_list->filecount) {
-      char *log = log_list->logs[i];
+      char *log = log_list->log_names[i];
       if(log != NULL) { 
         g_print("Log: %s\n", log);
         GtkWidget *button = gtk_button_new_with_label(log);

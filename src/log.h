@@ -4,7 +4,7 @@
 typedef struct LogList {
   size_t capacity;
   size_t filecount;
-  char **logs;
+  char **log_names;
 } log_list_t;
 
 typedef struct LogEntry {
@@ -23,7 +23,8 @@ typedef struct Log {
 
 log_list_t *log_list_get();
 void log_list_free(log_list_t *log_list);
-log_t  *log_create(char *name);
+log_t *log_create(char *name);
+log_t *log_new();
 log_t *log_load(char *name);
 void log_name_set(log_t *log, char *name);
 void log_free(log_t *log);

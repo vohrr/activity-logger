@@ -7,41 +7,25 @@
 
 log_t *log_create(char *name) {
 
-  log_t *log = malloc(sizeof(log_t));
-  if(log == NULL) {
-    return NULL;
-  }
-  log->name = malloc(sizeof(char) * strlen(name));
-  if(log->name == NULL) {
-    free(log);
-    return NULL;
-  }
-
+  log_t *log = log_new();
+  log_name_set(log, name);
   log->size = 0;
   log->capacity = sizeof(log);
-  strcpy(log->name, name);
   log->entries = NULL;
-
   return log;
 }
 
 void log_entry_list_get(log_t *log) {
+
 }
 
 log_t *log_load(char *name) {
   // need to find file by name then parse all the entries into the entries log
-  log_t *log = malloc(sizeof(log_t));
-  if(log == NULL) {
-    return NULL;
-  }
-  //ensure file with name exists, return if not  
-  
+  log_t *log = log_new(); //ensure file with name exists, return if not  
   log_name_set(log, name);
   log_entry_list_get(log);
   return log;
 }
-
-
 
 log_list_t *log_list_get() {
   static const char *LOG_DIR = "logs/";
@@ -52,8 +36,8 @@ log_list_t *log_list_get() {
     return NULL;
   }
   size_t capacity = 10;
-  char **log_list = calloc(capacity, sizeof(char *));
-  if(log_list == NULL) {
+  char **log_names = calloc(capacity, sizeof(char *));
+  if(log_names == NULL) {
     return NULL;
   }
 
@@ -61,18 +45,19 @@ log_list_t *log_list_get() {
   size_t filecount = 0;
   while((de = readdir(dr)) != NULL) {
      if( strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) { continue; }
+
      if(filecount == capacity) {
        capacity = capacity*2;
-       log_list = (char **)realloc(log_list, sizeof(char *)*capacity);
+       log_names = (char **)realloc(log_names, sizeof(char *)*capacity);
      }
-
+     
      char *name = malloc(sizeof(char) * strlen(de->d_name) + 1);
      if(name == NULL) {
       return NULL;
      }
 
      strcpy(name, de->d_name);
-     memcpy(&log_list[filecount],  &name, sizeof(char *));
+     memcpy(&log_names[filecount],  &name, sizeof(char *));
      filecount++;
   }
   closedir(dr);
@@ -83,7 +68,7 @@ log_list_t *log_list_get() {
   }
   log_files->capacity = capacity;
   log_files->filecount = filecount;
-  log_files->logs = log_list;
+  log_files->log_names = log_names;
 
   printf("Filecount: %ld\n",filecount);
 
@@ -94,13 +79,13 @@ log_list_t *log_list_get() {
 void log_list_free(log_list_t *log_list) {
   size_t i = 0;
   while(i < log_list->filecount) {
-      char *log = log_list->logs[i];
+      char *log = log_list->log_names[i];
       if(log != NULL) {
         free(log);
       }
       i++;
     }
-  free(log_list->logs);
+  free(log_list->log_names);
   free(log_list);
 }
 
@@ -115,12 +100,11 @@ log_t *log_new() {
 
 void log_name_set(log_t *log, char *name) {
    if(log == NULL || name == NULL) { return; }
-
+  //TODO - check for existing memory allocation, realloc if necessary - will need for update
   log->name = malloc(sizeof(char)* strlen(name) +1);
   if(log->name == NULL) {
     return;
   }
-
   strcpy(log->name, name);
 }
 
