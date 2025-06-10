@@ -31,10 +31,10 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
     g_print("Loading logs..\n");
     size_t i = 0;
     while(i < log_list->filecount) {
-      char *log = log_list->log_names[i];
-      if(log != NULL) { 
-        g_print("Log: %s\n", log);
-        GtkWidget *button = gtk_button_new_with_label(log);
+      char *log_name = log_list->log_names[i];
+      if(log_name != NULL) { 
+        g_print("Log: %s\n", log_name);
+        GtkWidget *button = gtk_button_new_with_label(log_name);
         gtk_box_append(box, button); 
         g_signal_connect(button, "clicked", G_CALLBACK(view_log_click), user_data);
       }

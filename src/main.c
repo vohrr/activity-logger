@@ -28,21 +28,6 @@ static void activate(GtkApplication *app) {
   gtk_widget_set_visible (GTK_WIDGET(window), TRUE);
 
   g_object_unref(builder);
-/*  GTK_WINDOW(gtk_application_window_new(app));
-  gtk_window_set_title(window, "Activity Logger");
-  gtk_window_set_default_size(window, 1920, 1080);
-
-  //initialize grid
-  GtkWidget *grid = gtk_grid_new();
-  gtk_window_set_child(window, grid);
-
-  //initialize button and attach to grid
-  GtkWidget *button = gtk_button_new_with_label("New Log\n");
-  */
- // gtk_grid_attach(GTK_GRID(grid), button, 1, 0, 1, 1);
-
-  //display
-  //gtk_window_present(window);
 }
 
 int main(int argc, char **argv) {
@@ -54,4 +39,6 @@ int main(int argc, char **argv) {
   g_object_unref(app);
   return status;
 }
+
+
 

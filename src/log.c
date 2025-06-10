@@ -32,10 +32,11 @@ void log_entry_list_get(log_t *log) {
     return;
   }
   //TODO: parse file properly 
-  int ch = fgetc(file);
-  while(ch != EOF) {
-    printf("%c", ch);
-    ch = fgetc(file);
+  // we know our file will be in a specific format. we need to use file builtins to crawl the text and find our delimiters. 
+  // our delimiters are newlines '---'
+  char ln[200];
+  while(fgets(ln, sizeof(ln), file) != NULL) {
+    printf("%s", ln);
   }
   fclose(file);
   free(filename);

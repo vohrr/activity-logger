@@ -33,7 +33,36 @@
                       <object id="viewlogpagetitle" class="GtkLabel">
                         <property name="label">View Log</property>
                       </object>
-                    </child>
+                      </child>
+                      <child>
+                        <object id="logname" class="GtkEntry">
+                         <property name="placeholder-text">Log Name</property>
+                        </object>
+                      </child>
+                    <child>
+                      <object id="grid" class="GtkGrid">
+                        <child>
+                          <object id="savelog" class="GtkButton">
+                            <property name="label">Save</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">1</property>
+                              <property name="column-span">2</property>
+                              </layout>
+                          </object>
+                        </child>
+                        <child>
+                          <object id="deletelog" class="GtkButton">
+                          <property name="label">Delete</property>
+                            <layout>
+                              <property name="column">0</property>
+                              <property name="row">2</property>
+                              <property name="column-span">2</property>
+                              </layout>
+                          </object>
+                        </child>
+                      </object>
+                   </child>
                   </object>
                   </property>
               </object> <!-- single log view end-->
