@@ -11,12 +11,12 @@
         <child>
           <object id="newlog" class="GtkButton">
             <property name="label">Create New Log</property>
-          </object>
-        </child>
+            </object>
+          </child>
         <child>
           <object id="openlog" class="GtkButton">
             <property name="label">Open a Log</property>
-          </object>
+            </object>
           </child>
         <child>
           <object id="mainstack" class="GtkStack"> <!-- start stack -->
@@ -32,11 +32,11 @@
                     <child>
                       <object id="viewlogpagetitle" class="GtkLabel">
                         <property name="label">View Log</property>
-                      </object>
+                        </object>
                       </child>
-                      <child>
-                        <object id="logname" class="GtkEntry">
-                         <property name="placeholder-text">Log Name</property>
+                    <child>
+                      <object id="logname" class="GtkEntry">
+                        <property name="placeholder-text">Log Name</property>
                         </object>
                       </child>
                     <child>
@@ -49,44 +49,65 @@
                               <property name="row">1</property>
                               <property name="column-span">2</property>
                               </layout>
-                          </object>
-                        </child>
+                            </object>
+                          </child>
                         <child>
                           <object id="deletelog" class="GtkButton">
-                          <property name="label">Delete</property>
+                            <property name="label">Delete</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="row">2</property>
                               <property name="column-span">2</property>
                               </layout>
-                          </object>
-                        </child>
-                      </object>
-                   </child>
-                  </object>
+                            </object>
+                          </child>
+                        </object>
+                      </child>
+                    </object>
                   </property>
-              </object> <!-- single log view end-->
+                </object> <!-- single log view end-->
               </child>
             <child>
               <object id="page2" class="GtkStackPage"> <!-- log list page start -->
                 <property name="name">loglistpage</property>
                 <property name="child">
-                <object id="loglistpage" class="GtkBox">
-                <property name="orientation">vertical</property>
-                <property name="hexpand">1</property>
-                <property name="vexpand">1</property>
-                  <child>
-                    <object id="loglistpagetitle" class="GtkLabel">
-                    <property name="label">Log List</property>
+                  <object id="loglistpage" class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="hexpand">1</property>
+                    <property name="vexpand">1</property>
+                    <child>
+                      <object id="loglistpagetitle" class="GtkLabel">
+                        <property name="label">Log List</property>
+                        </object>
+                      </child>
                     </object>
-                  </child>
-                </object>
-              </property>
-              </object> <!-- log list page end -->
-            </child>
-          </object> <!-- end stack -->
-        </child>
+                  </property>
+                </object> <!-- log list page end -->
+              </child>
+            <child>
+              <object id="page3" class="GtkStackPage"> <!-- log entry page start -->
+                <property name="name">logentrypage</property>
+                <property name="child">
+                  <object id="logentrypage" class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="hexpand">1</property>
+                    <property name="vexpand">1</property>
+                    <child>
+                      <object id="logentrypagetitle" class="GtkLabel">
+                        <property name="label">Log Entry</property>
+                        </object>
+                      </child>
+                    <child>
+                      <object id="logmessage" class="GtkTextView">
+                        </object>
+                      </child>
+                    </object>
+                  </property>
+                </object> <!-- log entry page end -->
+              </child>
+            </object> <!-- end stack -->
+          </child>
         </object> <!-- end mainbox -->
-  </child>
-  </object> <!-- end window -->
-</interface>
+      </child>
+    </object> <!-- end window -->
+  </interface>
