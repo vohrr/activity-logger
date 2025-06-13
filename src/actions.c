@@ -66,6 +66,10 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
   //also need to bind to UI after, programatically add elements like above
 }
 
-void save_log_click() {
-  return;
+void save_log_click(GtkButton *button, gpointer user_data) {
+  g_print("Save Log Clicked.\n");
+}
+
+void delete_log_click(GtkButton *button, gpointer user_data){
+  g_print("Delete Log Clicked.\n");
 }
