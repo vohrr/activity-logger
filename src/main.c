@@ -18,7 +18,7 @@ static void activate(GtkApplication *app) {
   gtk_window_set_application(GTK_WINDOW(window), app);
 
   GObject *stack = gtk_builder_get_object(builder, "mainstack");
-  //bind button events
+  //connect signals and evenet handlers
   GObject *button = gtk_builder_get_object(builder, "newlog");
   g_signal_connect(button, "clicked", G_CALLBACK(new_log_click), stack);
 
@@ -32,6 +32,7 @@ static void activate(GtkApplication *app) {
   g_signal_connect(button, "clicked", G_CALLBACK(delete_log_click), NULL);
 
   gtk_widget_set_visible (GTK_WIDGET(window), TRUE);
+  g_object_unref(builder);
 }
 
 int main(int argc, char **argv) {
