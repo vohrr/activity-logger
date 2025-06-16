@@ -6,11 +6,10 @@
 #include <stdio.h>
 
 log_t *log_create(char *name) {
-
   log_t *log = log_new();
   log_name_set(log, name);
   log->size = 0;
-  log->capacity = sizeof(log);
+  log->capacity = 0; 
   log->entries = NULL;
   return log;
 }
@@ -32,19 +31,19 @@ void log_entry_list_get(log_t *log) {
     return;
   }
   //TODO: parse file properly 
-  // we know our file will be in a specific format. we need to use file builtins to crawl the text and find our delimiters. 
-  // our delimiters are newlines '---'
-  char ln[200];
+  // our delimiter  is | 
+  size_t buffer = 4096;
+  char ln[buffer];
   while(fgets(ln, sizeof(ln), file) != NULL) {
-    printf("%s", ln);
+    log_entry_t *entry =  log_entry_new(ln); 
+    //log_entry_add(log, entry, sizeof(size_t)+4096+11);
   }
   fclose(file);
   free(filename);
 }
 
 log_t *log_load(char *name) {
-  //TODO need to find file by name then parse all the entries into the entries log
-  log_t *log = log_new(); //ensure file with name exists, return if not  
+  log_t *log = log_new(); 
   log_name_set(log, name);
   log_entry_list_get(log);
   return log;
@@ -129,6 +128,40 @@ void log_name_set(log_t *log, char *name) {
     return;
   }
   strcpy(log->name, name);
+}
+
+void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
+  if (log->entries == NULL) {
+    log->entries = malloc(entry_size);
+    memcpy(&log->entries[0],  &entry, sizeof(log_entry_t));
+    log->capacity =  sizeof(entry);
+    log->size = 1;
+  }
+  //else if (reallocate if needed)
+}
+
+log_entry_t *log_entry_new(char *file_entry) {
+  log_entry_t *entry = malloc(sizeof(log_entry_t));
+  if(entry == NULL) {
+    return NULL;
+  }
+  const char *delim = "|";
+  //id
+  char *token;
+  token = strtok(file_entry, delim);
+  entry->id = strtoul(token, NULL, 10);
+  printf("Entry Id: %ld\n", entry->id);
+  //date
+  token = strtok(NULL, delim);
+  entry->datetime = malloc(sizeof(char)*strlen(token)+1);
+  strcpy(entry->datetime, token);
+  printf("Entry date: %s\n", entry->datetime);
+  //message
+  token = strtok(NULL, delim);
+  entry->message = malloc(sizeof(char)*strlen(token)+1);
+  strcpy(entry->message, token);
+  printf("Entry message: %s\n", entry->message);
+  return entry;
 }
 
 void log_free(log_t *log) {

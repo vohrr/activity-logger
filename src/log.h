@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <time.h>
 
 typedef struct LogList {
   size_t capacity;
@@ -10,7 +9,7 @@ typedef struct LogList {
 typedef struct LogEntry {
   size_t id;
   char *message;
-  struct tm datetime;
+  char *datetime;
 } log_entry_t;
 
 
@@ -32,8 +31,9 @@ void log_update();
 void log_delete();
 void log_unload();
 
-
+log_entry_t *log_entry_new(char *file_entry);
 log_entry_t *log_entry_load();
+void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size);
 void log_entry_list_get(log_t *log);
 void log_entry_unload();
 void log_entry_create();
