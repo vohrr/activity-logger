@@ -70,7 +70,7 @@ log_list_t *log_list_get() {
        capacity = capacity*2;
        log_names = (char **)realloc(log_names, sizeof(char *)*capacity);
      }
-     
+
      char *name = malloc(sizeof(char) * strlen(de->d_name) + 1);
      if(name == NULL) {
       return NULL;
