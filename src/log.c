@@ -8,9 +8,13 @@
 log_t *log_create(char *name) {
   log_t *log = log_new();
   log_name_set(log, name);
-  log->size = 0;
-  log->capacity = 0; 
-  log->entries = NULL;
+  return log;
+}
+
+log_t *log_load(char *name) {
+  log_t *log = log_new(); 
+  log_name_set(log, name);
+  log_entry_list_get(log);
   return log;
 }
 
@@ -30,23 +34,17 @@ void log_entry_list_get(log_t *log) {
     printf("Could not open file: %s\n", log->name);
     return;
   }
-  //TODO: parse file properly 
-  // our delimiter  is | 
+
   size_t buffer = 4096;
   char ln[buffer];
   while(fgets(ln, sizeof(ln), file) != NULL) {
     log_entry_t *entry =  log_entry_new(ln); 
-    //log_entry_add(log, entry, sizeof(size_t)+4096+11);
+    log_entry_add(log, entry, sizeof(size_t)*(strlen(entry->message)+strlen(entry->datetime)+1));
   }
   fclose(file);
   free(filename);
-}
 
-log_t *log_load(char *name) {
-  log_t *log = log_new(); 
-  log_name_set(log, name);
-  log_entry_list_get(log);
-  return log;
+  //TODO need to make sure we clean up the memory when closing 
 }
 
 log_list_t *log_list_get() {
@@ -112,11 +110,13 @@ void log_list_free(log_list_t *log_list) {
 }
 
 log_t *log_new() {
-  
   log_t *log = malloc(sizeof(log_t));
   if(log == NULL) {
     return NULL; 
   }
+  log->size = 0;
+  log->capacity = 0; 
+  log->entries = NULL;
   return log;
 }
 
@@ -128,16 +128,21 @@ void log_name_set(log_t *log, char *name) {
     return;
   }
   strcpy(log->name, name);
+  free(name);
 }
 
 void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
   if (log->entries == NULL) {
-    log->entries = malloc(entry_size);
+    log->entries = calloc(1, entry_size);
     memcpy(&log->entries[0],  &entry, sizeof(log_entry_t));
-    log->capacity =  sizeof(entry);
+    log->capacity = sizeof(entry);
     log->size = 1;
   }
-  //else if (reallocate if needed)
+  else {
+    log->capacity += sizeof(entry);
+    log->size += 1;
+    log->entries = realloc(log->entries, sizeof(size_t)*log->capacity);
+  }
 }
 
 log_entry_t *log_entry_new(char *file_entry) {
@@ -164,14 +169,19 @@ log_entry_t *log_entry_new(char *file_entry) {
   return entry;
 }
 
+void log_entry_free(log_entry_t *entry) {
+  free(entry->message);
+  free(entry->datetime);
+  free(entry);
+}
+
 void log_free(log_t *log) {
   if(log->name != NULL) { free(log->name); }
-
   if(log->entries != NULL) {
     for(size_t i = 0; i < log->size; i++) {
-      free(log->entries[i]);
+      log_entry_free(log->entries[i]);
     }
   }
-
   free(log);
 }
+

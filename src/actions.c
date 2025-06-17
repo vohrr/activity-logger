@@ -58,9 +58,19 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage"); 
   set_stackpage_label(GTK_WIDGET(user_data), "View Log");
   log_t *log = log_load(label);
-
+  
   if (log == NULL) {
     g_print("Failed to load data for %s\n", label);
+    return;
+  }
+  g_print("Log name: %s\n", log->name);
+  g_print("Number of entries: %ld\n", log->size);
+  if(log->entries != NULL) {
+  g_print("First entry date: %s\n", log->entries[0]->datetime);
+  }
+  else {
+    g_print("Entry wasn't added");
+    return;
   }
   //etc do stuff here to load existing log and log entries
   //also need to bind to UI after, programatically add elements like above
