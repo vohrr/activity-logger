@@ -123,12 +123,12 @@ log_t *log_new() {
 void log_name_set(log_t *log, char *name) {
    if(log == NULL || name == NULL) { return; }
   //TODO - check for existing memory allocation, realloc if necessary - will need for update
-  log->name = malloc(sizeof(char)* strlen(name) +1);
+  log->name = malloc(sizeof(char) * strlen(name) + 1);
   if(log->name == NULL) {
     return;
   }
   strcpy(log->name, name);
-  free(name);
+  //free(name);
 }
 
 void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
@@ -140,8 +140,9 @@ void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
   }
   else {
     log->capacity += sizeof(entry);
-    log->size += 1;
     log->entries = realloc(log->entries, sizeof(size_t)*log->capacity);
+    memcpy(&log->entries[log->size], &entry, sizeof(log_entry_t));
+    log->size += 1;
   }
 }
 

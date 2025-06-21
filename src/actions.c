@@ -59,10 +59,29 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
   set_stackpage_label(GTK_WIDGET(user_data), "View Log");
   log_t *log = log_load(label);
   
-  if (log == NULL || log->entries == NULL) {
+  if (log == NULL) {
     g_print("Failed to load data for %s\n", label);
     return;
   }
+  if (log->entries == NULL) {
+    g_print("No log entries for this log\n");
+    return;
+  }
+  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "viewlogpage");
+  GtkBox *box = GTK_BOX(boxwidget);
+  size_t i = 0;
+  while(i < log->size) {
+    log_entry_t *entry = log->entries[i];
+    g_print("Log entry Id: %ld\n", entry->id);
+    g_print("Log entry date: %s\n", entry->datetime);
+    g_print("Log entry message: %s\n", entry->message);
+    if(entry != NULL) {
+        GtkWidget *button = gtk_button_new_with_label(entry->datetime);
+        gtk_box_append(box,button);
+    } 
+    i++;
+  }
+
   //TODO: also need to bind to UI after, programatically add elements like above
 }
 
