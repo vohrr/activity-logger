@@ -96,7 +96,7 @@
                     <property name="vexpand">1</property>
                     <child>
                       <object id="logentrypagetitle" class="GtkLabel">
-                        <property name="label">Log Entry</property>
+                        <property name="label">Log Entries</property>
                         </object>
                       </child>
                     <child>

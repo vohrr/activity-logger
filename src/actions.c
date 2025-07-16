@@ -55,8 +55,21 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 void view_log_click(GtkWidget *widget, gpointer user_data) {
   char* label = gtk_button_get_label(GTK_BUTTON(widget));
   g_print("Viewing log: %s\n", label);
-  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage"); 
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentrypage"); 
   set_stackpage_label(GTK_WIDGET(user_data), "View Log");
+
+  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentrypage");
+  GtkBox *box = GTK_BOX(boxwidget);
+  GtkWidget *child = gtk_widget_get_first_child(boxwidget);
+
+  while(child) {
+    GtkWidget *next_child = gtk_widget_get_next_sibling(child);
+    if(GTK_IS_BUTTON(child)) {
+         gtk_widget_unparent(child); 
+    }
+    child = next_child;
+  }
+
   log_t *log = log_load(label);
   
   if (log == NULL) {
@@ -67,8 +80,6 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
     g_print("No log entries for this log\n");
     return;
   }
-  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "viewlogpage");
-  GtkBox *box = GTK_BOX(boxwidget);
   size_t i = 0;
   while(i < log->size) {
     log_entry_t *entry = log->entries[i];

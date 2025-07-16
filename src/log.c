@@ -128,7 +128,6 @@ void log_name_set(log_t *log, char *name) {
     return;
   }
   strcpy(log->name, name);
-  //free(name);
 }
 
 void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
