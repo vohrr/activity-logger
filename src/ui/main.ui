@@ -116,10 +116,12 @@
                         <property name="label">Message</property>
                         </object>
                       </child>
-                    <child>
+                    <!--                    <child>
                       <object id="logmessage" class="GtkTextView">
+                        <property name="vexpand">1</property>
+                        <property name="hexpand">1</property>
                         </object>
-                      </child>
+                      </child> -->
                     </object>
                   </property>
                 </object> <!-- log entry view end -->

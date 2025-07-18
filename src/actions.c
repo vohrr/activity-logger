@@ -10,6 +10,10 @@ static void set_stackpage_label(GtkWidget *stackbox, char *newlabel) {
   gtk_label_set_label(GTK_LABEL(label), newlabel);
 }
 
+void render_action_buttons(GtkWidget stackpage) {
+  return;
+}
+
 void new_log_click(GtkWidget *widget, gpointer user_data) {
   g_print("New log clicked!\n");
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage");
@@ -59,15 +63,8 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
 
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentrylist");
   GtkBox *box = GTK_BOX(boxwidget);
-  GtkWidget *child = gtk_widget_get_first_child(boxwidget);
 
-  while(child) {
-    GtkWidget *next_child = gtk_widget_get_next_sibling(child);
-    if(GTK_IS_BUTTON(child)) {
-         gtk_widget_unparent(child); 
-    }
-    child = next_child;
-  }
+  clear_elements(boxwidget, BUTTON);
 
   log_t *log = log_load(label);
   
@@ -106,14 +103,51 @@ void delete_log_click(GtkButton *button, gpointer user_data){
 }
 
 void log_entry_click(GtkButton *button, gpointer user_data) {
+  //set view state and navigate to element
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentryview"); 
   log_entry_t *log_entry = g_object_get_data(G_OBJECT(button), "entry");
-  set_stackpage_label(GTK_WIDGET(user_data), strcat(log_entry->datetime, " message: "));
+  set_stackpage_label(GTK_WIDGET(user_data), strcat(log_entry->datetime, " message: ")); // i dont think this works at all
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentryview");
-  GtkTextView *message_box = GTK_TEXT_VIEW(gtk_widget_get_last_child(boxwidget));
-  GtkTextBuffer *message = gtk_text_view_get_buffer(message_box);
+  GtkBox *box = GTK_BOX(boxwidget);
+
+  clear_elements(boxwidget, SCROLLED_WINDOW);
+  //append the scrollable text view programmatically 
+  GtkWidget *scrolled = gtk_scrolled_window_new();
+  gtk_widget_set_vexpand(scrolled, TRUE);
+  gtk_widget_set_hexpand(scrolled, TRUE);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  
+  GtkWidget *message_box = gtk_text_view_new();
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(message_box), GTK_WRAP_WORD_CHAR);
+  gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), message_box);
+  gtk_box_append(GTK_BOX(box), scrolled);
+  
+  GtkTextBuffer *message = gtk_text_view_get_buffer(GTK_TEXT_VIEW(message_box));
   gtk_text_buffer_set_text(message,  log_entry->message, -1);
   g_print("Loading log entry %ld\n", log_entry->id);
-  
+}
+
+
+void clear_elements(GtkWidget *boxwidget, element_type element_type) {
+  GtkWidget *child = gtk_widget_get_first_child(boxwidget);
+
+  while(child) {
+    GtkWidget *next_child = gtk_widget_get_next_sibling(child);
+    switch(element_type) {
+      case BUTTON:
+        if(GTK_IS_BUTTON(child)) {
+             gtk_widget_unparent(child); 
+        }
+        break;  
+      case SCROLLED_WINDOW:
+        if(GTK_IS_SCROLLED_WINDOW(child)) {
+          gtk_widget_unparent(child); 
+        }
+        break;
+      default:
+        break;
+    }
+    child = next_child;
+  }
 }
 
