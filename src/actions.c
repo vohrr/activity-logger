@@ -10,7 +10,7 @@ static void set_stackpage_label(GtkWidget *stackbox, char *newlabel) {
   gtk_label_set_label(GTK_LABEL(label), newlabel);
 }
 
-void render_action_buttons(GtkWidget stackpage) {
+void render_action_buttons(gpointer *stackpage) {
   return;
 }
 
@@ -90,8 +90,6 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
     } 
     i++;
   }
-
-  //TODO: also need to bind to UI after, programatically add elements like above
 }
 
 void save_log_click(GtkButton *button, gpointer user_data) {
@@ -125,6 +123,8 @@ void log_entry_click(GtkButton *button, gpointer user_data) {
   GtkTextBuffer *message = gtk_text_view_get_buffer(GTK_TEXT_VIEW(message_box));
   gtk_text_buffer_set_text(message,  log_entry->message, -1);
   g_print("Loading log entry %ld\n", log_entry->id);
+
+  render_action_buttons(user_data);
 }
 
 
@@ -135,15 +135,13 @@ void clear_elements(GtkWidget *boxwidget, element_type element_type) {
     GtkWidget *next_child = gtk_widget_get_next_sibling(child);
     switch(element_type) {
       case BUTTON:
-        if(GTK_IS_BUTTON(child)) {
-             gtk_widget_unparent(child); 
-        }
+        if(GTK_IS_BUTTON(child)) { gtk_widget_unparent(child); }
         break;  
+
       case SCROLLED_WINDOW:
-        if(GTK_IS_SCROLLED_WINDOW(child)) {
-          gtk_widget_unparent(child); 
-        }
+        if(GTK_IS_SCROLLED_WINDOW(child)) { gtk_widget_unparent(child); }
         break;
+        
       default:
         break;
     }
