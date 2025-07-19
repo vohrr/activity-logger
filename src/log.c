@@ -11,7 +11,7 @@ log_t *log_create(char *name) {
   return log;
 }
 
-log_t *log_load(char *name) {
+log_t *log_load(const char *name) {
   log_t *log = log_new(); 
   log_name_set(log, name);
   log_entry_list_get(log);
@@ -120,7 +120,7 @@ log_t *log_new() {
   return log;
 }
 
-void log_name_set(log_t *log, char *name) {
+void log_name_set(log_t *log, const char *name) {
    if(log == NULL || name == NULL) { return; }
   //TODO - check for existing memory allocation, realloc if necessary - will need for update
   log->name = malloc(sizeof(char) * strlen(name) + 1);

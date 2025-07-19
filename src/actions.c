@@ -4,20 +4,19 @@
 #include "log.h"
 #include "actions.h"
 
-static void set_stackpage_label(GtkWidget *stackbox, char *newlabel) {
-  GtkWidget *box = gtk_widget_get_first_child(stackbox);
-  GtkWidget *label = gtk_widget_get_first_child(box);
-  gtk_label_set_label(GTK_LABEL(label), newlabel);
+static void void_widget(GtkWidget *widget) {
+  (void)widget;
 }
 
 void render_action_buttons(gpointer *stackpage) {
+  (void)stackpage;
   return;
 }
 
 void new_log_click(GtkWidget *widget, gpointer user_data) {
+  void_widget(widget);
   g_print("New log clicked!\n");
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "viewlogpage");
-  set_stackpage_label(GTK_WIDGET(user_data), "New Log");
   log_t *first_log = log_create("Test Log");
   if (first_log == NULL) {
     g_print("Failed to create log\n");
@@ -26,6 +25,7 @@ void new_log_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void log_list_click(GtkWidget *widget, gpointer user_data) {
+  void_widget(widget);
   g_print("log list clicked!\n");
 
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "loglistpage");
@@ -57,7 +57,7 @@ void log_list_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void view_log_click(GtkWidget *widget, gpointer user_data) {
-  char* label = gtk_button_get_label(GTK_BUTTON(widget));
+  const char* label = gtk_button_get_label(GTK_BUTTON(widget));
   g_print("Viewing log: %s\n", label);
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentrylist"); 
 
@@ -79,9 +79,6 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
   size_t i = 0;
   while(i < log->size) {
     log_entry_t *entry = log->entries[i];
-    g_print("Log entry Id: %ld\n", entry->id);
-    g_print("Log entry date: %s\n", entry->datetime);
-    g_print("Log entry message: %s\n", entry->message);
     if(entry != NULL) {
         GtkWidget *button = gtk_button_new_with_label(entry->datetime);
         g_object_set_data(G_OBJECT(button), "entry", entry);
@@ -93,10 +90,14 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
 }
 
 void save_log_click(GtkButton *button, gpointer user_data) {
+  (void)button;
+  (void)user_data;
   g_print("Save Log Clicked.\n");
 }
 
 void delete_log_click(GtkButton *button, gpointer user_data){
+  (void)button;
+  (void)user_data;
   g_print("Delete Log Clicked.\n");
 }
 
@@ -104,7 +105,6 @@ void log_entry_click(GtkButton *button, gpointer user_data) {
   //set view state and navigate to element
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentryview"); 
   log_entry_t *log_entry = g_object_get_data(G_OBJECT(button), "entry");
-  set_stackpage_label(GTK_WIDGET(user_data), strcat(log_entry->datetime, " message: ")); // i dont think this works at all
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentryview");
   GtkBox *box = GTK_BOX(boxwidget);
 

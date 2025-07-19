@@ -18,7 +18,7 @@ static void activate(GtkApplication *app) {
   gtk_window_set_application(GTK_WINDOW(window), app);
 
   GObject *stack = gtk_builder_get_object(builder, "mainstack");
-  //connect signals and evenet handlers
+  //bind button events
   GObject *button = gtk_builder_get_object(builder, "newlog");
   g_signal_connect(button, "clicked", G_CALLBACK(new_log_click), stack);
 

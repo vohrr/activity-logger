@@ -24,8 +24,8 @@ log_list_t *log_list_get();
 void log_list_free(log_list_t *log_list);
 log_t *log_create(char *name);
 log_t *log_new();
-log_t *log_load(char *name);
-void log_name_set(log_t *log, char *name);
+log_t *log_load(const char *name);
+void log_name_set(log_t *log, const char *name);
 void log_free(log_t *log);
 void log_update();
 void log_delete();
@@ -39,10 +39,3 @@ void log_entry_unload();
 void log_entry_create();
 void log_entry_update();
 void log_entry_delete();
-
-
-
-
-
-
-
