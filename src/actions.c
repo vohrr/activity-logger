@@ -46,9 +46,33 @@ void return_to_log_click(GtkWidget *widget, gpointer user_data) {
   log_entry_handler_free(log_entry_handler);
 }
 
+void render_new_button(GtkWidget *boxwidget, char *log_name, gpointer user_data) {
+  GtkBox *box = GTK_BOX(boxwidget);
+  GtkWidget *button = gtk_button_new_with_label("Add New Entry");
+  g_object_set_data(G_OBJECT(button), "log_name", log_name);
+  gtk_box_append(box, button);
+  g_signal_connect(button, "clicked", G_CALLBACK(new_log_entry_click), user_data);
+}
+
+void render_message_box(GtkBox *box, char *entry_message) {
+  GtkWidget *scrolled = gtk_scrolled_window_new();
+  gtk_widget_set_vexpand(scrolled, TRUE);
+  gtk_widget_set_hexpand(scrolled, TRUE);
+  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  
+  GtkWidget *message_box = gtk_text_view_new();
+  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(message_box), GTK_WRAP_WORD_CHAR);
+  gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), message_box);
+  gtk_box_append(GTK_BOX(box), scrolled);
+  
+  if(entry_message != NULL) {
+    GtkTextBuffer *message = gtk_text_view_get_buffer(GTK_TEXT_VIEW(message_box));
+    gtk_text_buffer_set_text(message,  entry_message, -1);
+  }
+}
+
 void render_action_buttons(GtkWidget *boxwidget, log_entry_handler_t *log_entry_handler, gpointer user_data) {
   clear_elements(boxwidget, BUTTON);
-
   GtkBox *box = GTK_BOX(boxwidget);
   GtkWidget *button = gtk_button_new_with_label("Save");
   gtk_box_append(box, button);
@@ -109,7 +133,8 @@ void view_log_click(GtkWidget *widget, gpointer user_data) {
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentrylist");
 
   clear_elements(boxwidget, BUTTON);
-  render_log_entries(boxwidget, label, user_data); 
+  render_log_entries(boxwidget, label, user_data);
+  render_new_button(boxwidget, label, user_data);
 }
 
 void save_log_click(GtkButton *button, gpointer user_data) {
@@ -125,44 +150,37 @@ void delete_log_click(GtkButton *button, gpointer user_data){
 }
 
 void log_entry_click(GtkButton *button, gpointer user_data) {
-  //set view state and navigate to element
   gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentryview"); 
   log_entry_t *log_entry = g_object_get_data(G_OBJECT(button), "entry");
   char *log_name = g_object_get_data(G_OBJECT(button), "log_name");
+  
   GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentryview");
   GtkBox *box = GTK_BOX(boxwidget);
 
   clear_elements(boxwidget, SCROLLED_WINDOW);
-  //append the scrollable text view programmatically 
-  GtkWidget *scrolled = gtk_scrolled_window_new();
-  gtk_widget_set_vexpand(scrolled, TRUE);
-  gtk_widget_set_hexpand(scrolled, TRUE);
-  gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  
-  GtkWidget *message_box = gtk_text_view_new();
-  gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(message_box), GTK_WRAP_WORD_CHAR);
-  gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled), message_box);
-  gtk_box_append(GTK_BOX(box), scrolled);
-  
-  GtkTextBuffer *message = gtk_text_view_get_buffer(GTK_TEXT_VIEW(message_box));
-  gtk_text_buffer_set_text(message,  log_entry->message, -1);
   g_print("Loading log entry %ld\n", log_entry->id);
-  
-  log_entry_handler_t *log_entry_handler = malloc(sizeof(log_entry_handler_t));
-  log_entry_handler->log_name = malloc(sizeof(char) * strlen(log_name) + 1);
-
-  if(log_entry_handler->log_name == NULL) {
-    g_print("Unable to allocate log entry handler name");
-    return;
-  }
-  strcpy(log_entry_handler->log_name, log_name); 
-  memcpy(&log_entry_handler->log_entry,  &log_entry, sizeof(log_entry_t));
+  render_message_box(box, log_entry->message);
+  log_entry_handler_t *log_entry_handler = log_entry_handler_new(log_name, log_entry); 
 
   render_action_buttons(boxwidget, log_entry_handler, user_data);
 }
 
 void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_handler) {
-  g_print("Save Log Entry Clicked!");
+  void_widget(widget);
+  g_print("Save Log Entry Clicked!\n");
+}
+
+void new_log_entry_click(GtkButton *button, gpointer user_data) {
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentryview"); 
+  char *log_name = g_object_get_data(G_OBJECT(button), "log_name");
+  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentryview");
+  GtkBox *box = GTK_BOX(boxwidget);
+
+  clear_elements(boxwidget, SCROLLED_WINDOW);
+  render_message_box(box, NULL);
+  log_entry_handler_t *log_entry_handler = log_entry_handler_new(log_name, NULL); 
+  render_action_buttons(boxwidget, log_entry_handler, user_data);
+  g_print("New Log Entry Clicked!\n");
 }
 
 
@@ -187,7 +205,3 @@ void clear_elements(GtkWidget *boxwidget, element_type element_type) {
   }
 }
 
-void log_entry_handler_free(log_entry_handler_t *log_entry_handler) {
-  free(log_entry_handler->log_name);
-  free(log_entry_handler);
-}

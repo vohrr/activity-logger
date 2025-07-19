@@ -12,6 +12,10 @@ typedef struct LogEntry {
   char *datetime;
 } log_entry_t;
 
+typedef struct LogEntryHandler {
+  char *log_name;
+  log_entry_t log_entry;
+} log_entry_handler_t;
 
 typedef struct Log {
   size_t size;
@@ -39,3 +43,6 @@ void log_entry_unload();
 void log_entry_create();
 void log_entry_update();
 void log_entry_delete();
+
+log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entry);
+void log_entry_handler_free(log_entry_handler_t *log_entry_handler);

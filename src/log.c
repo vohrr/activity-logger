@@ -185,3 +185,23 @@ void log_free(log_t *log) {
   free(log);
 }
 
+log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entry) {
+  log_entry_handler_t *log_entry_handler = malloc(sizeof(log_entry_handler_t));
+  log_entry_handler->log_name = malloc(sizeof(char) * strlen(log_name) + 1);
+
+  if(log_entry_handler->log_name == NULL) {
+    printf("Unable to allocate log entry handler name");
+    return NULL;
+  }
+  strcpy(log_entry_handler->log_name, log_name); 
+
+  if(log_entry != NULL) {
+    memcpy(&log_entry_handler->log_entry,  &log_entry, sizeof(log_entry_t));
+  }
+  return log_entry_handler;
+}
+
+void log_entry_handler_free(log_entry_handler_t *log_entry_handler) {
+  free(log_entry_handler->log_name);
+  free(log_entry_handler);
+}
