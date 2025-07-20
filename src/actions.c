@@ -25,8 +25,8 @@ void render_log_entries(GtkWidget *stack_box_widget, char *label, gpointer main_
     g_print("No log entries for this log\n");
     return;
   }
-  size_t i = 0;
-  while(i < log->size) {
+  int i = log->size - 1;
+  while(i >= 0) {
     log_entry_t *entry = log->entries[i];
     if(entry != NULL) {
         GtkWidget *log_entry_button = gtk_button_new_with_label(entry->datetime);
@@ -35,7 +35,7 @@ void render_log_entries(GtkWidget *stack_box_widget, char *label, gpointer main_
         gtk_box_append(stack_box,log_entry_button);
         g_signal_connect(log_entry_button, "clicked", G_CALLBACK(log_entry_click), main_stack);
     } 
-    i++;
+    i--;
   }
 }
 
