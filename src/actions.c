@@ -40,7 +40,6 @@ void render_log_entries(GtkWidget *stack_box_widget, char *label, gpointer main_
 }
 
 void return_to_log_click(GtkWidget *return_button_widget, gpointer main_stack) {
-  //GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(main_stack), "logentrylist");
   log_entry_handler_t *log_entry_handler = g_object_get_data(G_OBJECT(return_button_widget), "entry_handler");
   gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "logentrylist"); 
   log_entry_handler_free(log_entry_handler);
