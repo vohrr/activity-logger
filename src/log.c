@@ -12,7 +12,6 @@ FILE *open_log_file(char *log_name) {
   }
   strcpy(filename, "logs/");
   strcat(filename, log_name);
-  printf("Opening %s\n", filename);
   FILE *file = fopen(filename, "a+");
   if(file == NULL) {
     printf("Could not open file: %s\n", log_name);
@@ -49,7 +48,6 @@ void log_entry_list_get(log_t *log) {
   }
 
   fclose(file);
-  //TODO need to make sure we clean up the memory when closing 
 }
 
 log_list_t *log_list_get() {
@@ -66,7 +64,6 @@ log_list_t *log_list_get() {
     return NULL;
   }
 
-  printf("Logs file opened..\n");
   size_t filecount = 0;
   while((de = readdir(dr)) != NULL) {
      if( strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) { continue; }
@@ -94,8 +91,6 @@ log_list_t *log_list_get() {
   log_files->capacity = capacity;
   log_files->filecount = filecount;
   log_files->log_names = log_names;
-
-  printf("Filecount: %ld\n",filecount);
 
   return log_files;
 }
@@ -126,8 +121,7 @@ log_t *log_new() {
 }
 
 void log_name_set(log_t *log, const char *name) {
-   if(log == NULL || name == NULL) { return; }
-  //TODO - check for existing memory allocation, realloc if necessary - will need for update
+  if(log == NULL || name == NULL) { return; }
   log->name = malloc(sizeof(char) * strlen(name) + 1);
   if(log->name == NULL) {
     return;
@@ -179,17 +173,14 @@ log_entry_t *log_entry_load(char *file_entry) {
   char *token;
   token = strtok(file_entry, delim);
   entry->id = strtoul(token, NULL, 10);
-  printf("Entry Id: %ld\n", entry->id);
   //date
   token = strtok(NULL, delim);
   entry->datetime = malloc(sizeof(char)*strlen(token)+1);
   strcpy(entry->datetime, token);
-  printf("Entry date: %s\n", entry->datetime);
   //message
   token = strtok(NULL, delim);
   entry->message = malloc(sizeof(char)*strlen(token)+1);
   strcpy(entry->message, token);
-  printf("Entry message: %s\n", entry->message);
   return entry;
 }
 
@@ -200,7 +191,7 @@ void log_entry_create(log_entry_t *log_entry, char *log_name) {
 }
 
 void log_entry_update(log_entry_t *log_entry, char *log_name, char *message) {
-  
+  //TODO
   //  FILE *file = open_log_file(log_name);
   //  find the entry we are looking for and update the message
   //fclose(file);
@@ -245,7 +236,6 @@ void log_free(log_t *log) {
   }
   free(log);
 }
-
 
 void log_entry_handler_free(log_entry_handler_t *log_entry_handler) {
   free(log_entry_handler->log_name);
