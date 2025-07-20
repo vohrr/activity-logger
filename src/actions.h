@@ -16,7 +16,7 @@ void log_list_click(GtkWidget *widget, gpointer user_data);
 
 void log_entry_click(GtkButton *button, gpointer user_data);
 void new_log_entry_click(GtkButton *button, gpointer user_data);
-void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_handler);
+void save_log_entry_click(GtkWidget *widget, gpointer user_data);
 void clear_elements(GtkWidget *boxwidget, element_type element_type);
 void render_action_buttons(GtkWidget *boxwidget, log_entry_handler_t *log_handler, gpointer user_data);
 void render_log_entries(GtkWidget *boxwidget, char *label, gpointer user_data);

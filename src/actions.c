@@ -27,8 +27,10 @@ void render_log_entries(GtkWidget *boxwidget, char *label, gpointer user_data) {
   }
   size_t i = 0;
   while(i < log->size) {
+    g_print("in the while loop to render log entries...");
     log_entry_t *entry = log->entries[i];
     if(entry != NULL) {
+        g_print("rendering log id: %ld\n", entry->id);
         GtkWidget *button = gtk_button_new_with_label(entry->datetime);
         g_object_set_data(G_OBJECT(button), "entry", entry);
         g_object_set_data(G_OBJECT(button), "log_name", log->name);
@@ -40,9 +42,9 @@ void render_log_entries(GtkWidget *boxwidget, char *label, gpointer user_data) {
 }
 
 void return_to_log_click(GtkWidget *widget, gpointer user_data) {
-  GtkWidget *boxwidget = gtk_widget_get_parent(widget);
+  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentrylist");
   log_entry_handler_t *log_entry_handler = g_object_get_data(G_OBJECT(widget), "entry_handler");
-  render_log_entries(boxwidget, log_entry_handler->log_name, user_data);
+  gtk_stack_set_visible_child_name(GTK_STACK(user_data), "logentrylist"); 
   log_entry_handler_free(log_entry_handler);
 }
 
@@ -76,7 +78,8 @@ void render_action_buttons(GtkWidget *boxwidget, log_entry_handler_t *log_entry_
   GtkBox *box = GTK_BOX(boxwidget);
   GtkWidget *button = gtk_button_new_with_label("Save");
   gtk_box_append(box, button);
-  g_signal_connect(button, "clicked", G_CALLBACK(save_log_entry_click), log_entry_handler);
+  g_object_set_data(G_OBJECT(button), "entry_handler", log_entry_handler);
+  g_signal_connect(button, "clicked", G_CALLBACK(save_log_entry_click), user_data);
   button = gtk_button_new_with_label("Return");
   g_object_set_data(G_OBJECT(button), "entry_handler", log_entry_handler);
   g_signal_connect(button, "clicked", G_CALLBACK(return_to_log_click), user_data);
@@ -165,7 +168,8 @@ void log_entry_click(GtkButton *button, gpointer user_data) {
   render_action_buttons(boxwidget, log_entry_handler, user_data);
 }
 
-void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_handler) {
+void save_log_entry_click(GtkWidget *widget, gpointer user_data) {
+  log_entry_handler_t *log_entry_handler = g_object_get_data(G_OBJECT(widget), "entry_handler");
   GtkWidget *scrolled_view = gtk_widget_get_prev_sibling(widget);
   GtkWidget *text_view = gtk_widget_get_first_child(scrolled_view);
   GtkTextBuffer *message_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
@@ -174,8 +178,9 @@ void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_hand
   gtk_text_buffer_get_start_iter(message_buffer, &start);
   gtk_text_buffer_get_end_iter(message_buffer, &end);
   gchar *message = gtk_text_buffer_get_text(message_buffer, &start, &end, FALSE);
-
-  if(&log_entry_handler->log_entry == NULL) {
+  
+  if(log_entry_handler->log_entry == NULL) {
+    g_print("saving new entry...");
     log_t *log = log_load(log_entry_handler->log_name);
     log_entry_t *new_entry = log_entry_new(log->size + 1, message);
     if(new_entry == NULL) {
@@ -187,10 +192,17 @@ void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_hand
     log_free(log);
   }
   else {
-    log_entry_update(&log_entry_handler->log_entry, log_entry_handler->log_name, message); 
+
+    g_print("updating entry...");
+    log_entry_update(log_entry_handler->log_entry, log_entry_handler->log_name, message); 
   }
-  g_print("Save Log Entry Clicked!\n");
   g_free(message);
+  
+  GtkWidget *boxwidget = gtk_stack_get_child_by_name(GTK_STACK(user_data), "logentrylist");
+  clear_elements(boxwidget, BUTTON);
+  render_log_entries(boxwidget, log_entry_handler->log_name, user_data);
+  render_new_button(boxwidget, log_entry_handler->log_name, user_data);
+
 }
 
 void new_log_entry_click(GtkButton *button, gpointer user_data) {

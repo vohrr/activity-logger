@@ -14,7 +14,7 @@ typedef struct LogEntry {
 
 typedef struct LogEntryHandler {
   char *log_name;
-  log_entry_t log_entry;
+  log_entry_t *log_entry;
 } log_entry_handler_t;
 
 typedef struct Log {

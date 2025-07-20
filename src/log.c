@@ -5,6 +5,23 @@
 #include <dirent.h>
 #include <stdio.h>
 
+FILE *open_log_file(char *log_name) {
+  char *filename =  malloc(sizeof(char) * (strlen("logs/") + strlen(log_name)+1));
+  if(filename == NULL) {
+    return NULL; 
+  }
+  strcpy(filename, "logs/");
+  strcat(filename, log_name);
+  printf("Opening %s\n", filename);
+  FILE *file = fopen(filename, "a+");
+  if(file == NULL) {
+    printf("Could not open file: %s\n", log_name);
+    return NULL;
+  }
+  free(filename);
+  return file;
+}
+
 log_t *log_create(char *name) {
   log_t *log = log_new();
   log_name_set(log, name);
@@ -22,18 +39,7 @@ void log_entry_list_get(log_t *log) {
   if(log == NULL || log->name == NULL) {
     return;
   }
-  char *filename =  malloc(sizeof(char) * (strlen("logs/") + strlen(log->name)+1));
-  if(filename == NULL) {
-    return; 
-  }
-  strcpy(filename, "logs/");
-  strcat(filename, log->name);
-  printf("Opening %s\n", filename);
-  FILE *file = fopen(filename, "a+");
-  if(file == NULL) {
-    printf("Could not open file: %s\n", log->name);
-    return;
-  }
+  FILE *file = open_log_file(log->name);
 
   size_t buffer = 4096;
   char ln[buffer];
@@ -41,9 +47,8 @@ void log_entry_list_get(log_t *log) {
     log_entry_t *entry =  log_entry_load(ln); 
     log_entry_add(log, entry, sizeof(size_t)*(strlen(entry->message)+strlen(entry->datetime)+1));
   }
-  fclose(file);
-  free(filename);
 
+  fclose(file);
   //TODO need to make sure we clean up the memory when closing 
 }
 
@@ -151,12 +156,16 @@ log_entry_t *log_entry_new(size_t id, char *message) {
     return NULL;
   }
   log_entry->id = id; 
-  log_entry->datetime = malloc(sizeof(char)*50);
-  strcpy(log_entry->datetime, "getdatetimeplaceholder");
+
+  time_t now = time(NULL);
+  char *datetime = ctime(&now);
+  datetime[strcspn(datetime, "\n")] = '\0';
+  log_entry->datetime = malloc(sizeof(char)*strlen(datetime)+1);
+  strcpy(log_entry->datetime, datetime);
 
   log_entry->message = malloc(sizeof(char)*strlen(message)+1);
   strcpy(log_entry->message, message);
-
+  
   return log_entry;
 }
 
@@ -185,12 +194,16 @@ log_entry_t *log_entry_load(char *file_entry) {
 }
 
 void log_entry_create(log_entry_t *log_entry, char *log_name) {
-
-    //memcpy(&log_entry_handler->log_entry->message, &message);
+  FILE *file = open_log_file(log_name);
+  fprintf(file, "%ld|%s|%s\n", log_entry->id, log_entry->datetime, log_entry->message);
+  fclose(file);
 }
 
 void log_entry_update(log_entry_t *log_entry, char *log_name, char *message) {
-
+  
+  //  FILE *file = open_log_file(log_name);
+  //  find the entry we are looking for and update the message
+  //fclose(file);
 }
 
 log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entry) {
@@ -204,8 +217,16 @@ log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entr
   strcpy(log_entry_handler->log_name, log_name); 
 
   if(log_entry != NULL) {
-    memcpy(&log_entry_handler->log_entry,  &log_entry, sizeof(log_entry_t));
+    log_entry_handler->log_entry = malloc(sizeof(log_entry_t));
+    if(log_entry_handler->log_entry == NULL) {
+      printf("Unable to allocate log entry in handler");
+      free(log_entry_handler->log_name);
+      free(log_entry_handler);
+      return NULL;
+    }
+    memcpy(log_entry_handler->log_entry,  log_entry, sizeof(log_entry_t));
   }
+  
   return log_entry_handler;
 }
 
@@ -228,5 +249,6 @@ void log_free(log_t *log) {
 
 void log_entry_handler_free(log_entry_handler_t *log_entry_handler) {
   free(log_entry_handler->log_name);
+  if(log_entry_handler->log_entry != NULL) { free(log_entry_handler->log_entry); }
   free(log_entry_handler);
 }
