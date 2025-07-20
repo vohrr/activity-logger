@@ -38,7 +38,7 @@ void log_entry_list_get(log_t *log) {
   size_t buffer = 4096;
   char ln[buffer];
   while(fgets(ln, sizeof(ln), file) != NULL) {
-    log_entry_t *entry =  log_entry_new(ln); 
+    log_entry_t *entry =  log_entry_load(ln); 
     log_entry_add(log, entry, sizeof(size_t)*(strlen(entry->message)+strlen(entry->datetime)+1));
   }
   fclose(file);
@@ -145,7 +145,22 @@ void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
   }
 }
 
-log_entry_t *log_entry_new(char *file_entry) {
+log_entry_t *log_entry_new(size_t id, char *message) {
+  log_entry_t *log_entry = malloc(sizeof(log_entry_t));
+  if(log_entry == NULL) {
+    return NULL;
+  }
+  log_entry->id = id; 
+  log_entry->datetime = malloc(sizeof(char)*50);
+  strcpy(log_entry->datetime, "getdatetimeplaceholder");
+
+  log_entry->message = malloc(sizeof(char)*strlen(message)+1);
+  strcpy(log_entry->message, message);
+
+  return log_entry;
+}
+
+log_entry_t *log_entry_load(char *file_entry) {
   log_entry_t *entry = malloc(sizeof(log_entry_t));
   if(entry == NULL) {
     return NULL;
@@ -169,20 +184,13 @@ log_entry_t *log_entry_new(char *file_entry) {
   return entry;
 }
 
-void log_entry_free(log_entry_t *entry) {
-  free(entry->message);
-  free(entry->datetime);
-  free(entry);
+void log_entry_create(log_entry_t *log_entry, char *log_name) {
+
+    //memcpy(&log_entry_handler->log_entry->message, &message);
 }
 
-void log_free(log_t *log) {
-  if(log->name != NULL) { free(log->name); }
-  if(log->entries != NULL) {
-    for(size_t i = 0; i < log->size; i++) {
-      log_entry_free(log->entries[i]);
-    }
-  }
-  free(log);
+void log_entry_update(log_entry_t *log_entry, char *log_name, char *message) {
+
 }
 
 log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entry) {
@@ -200,6 +208,23 @@ log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entr
   }
   return log_entry_handler;
 }
+
+void log_entry_free(log_entry_t *log_entry) {
+  free(log_entry->message);
+  free(log_entry->datetime);
+  free(log_entry);
+}
+
+void log_free(log_t *log) {
+  if(log->name != NULL) { free(log->name); }
+  if(log->entries != NULL) {
+    for(size_t i = 0; i < log->size; i++) {
+      log_entry_free(log->entries[i]);
+    }
+  }
+  free(log);
+}
+
 
 void log_entry_handler_free(log_entry_handler_t *log_entry_handler) {
   free(log_entry_handler->log_name);

@@ -35,13 +35,13 @@ void log_update();
 void log_delete();
 void log_unload();
 
-log_entry_t *log_entry_new(char *file_entry);
-log_entry_t *log_entry_load();
+log_entry_t *log_entry_new(size_t id, char *message);
+log_entry_t *log_entry_load(char *file_entry);
 void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size);
 void log_entry_list_get(log_t *log);
-void log_entry_unload();
-void log_entry_create();
-void log_entry_update();
+void log_entry_free(log_entry_t *log_entry);
+void log_entry_create(log_entry_t *log_entry, char *log_name); 
+void log_entry_update(log_entry_t *log_entry, char *log_name, char *message); 
 void log_entry_delete();
 
 log_entry_handler_t *log_entry_handler_new(char *log_name, log_entry_t *log_entry);

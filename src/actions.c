@@ -166,8 +166,31 @@ void log_entry_click(GtkButton *button, gpointer user_data) {
 }
 
 void save_log_entry_click(GtkWidget *widget, log_entry_handler_t *log_entry_handler) {
-  void_widget(widget);
+  GtkWidget *scrolled_view = gtk_widget_get_prev_sibling(widget);
+  GtkWidget *text_view = gtk_widget_get_first_child(scrolled_view);
+  GtkTextBuffer *message_buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text_view));
+  
+  GtkTextIter start, end;
+  gtk_text_buffer_get_start_iter(message_buffer, &start);
+  gtk_text_buffer_get_end_iter(message_buffer, &end);
+  gchar *message = gtk_text_buffer_get_text(message_buffer, &start, &end, FALSE);
+
+  if(&log_entry_handler->log_entry == NULL) {
+    log_t *log = log_load(log_entry_handler->log_name);
+    log_entry_t *new_entry = log_entry_new(log->size + 1, message);
+    if(new_entry == NULL) {
+      g_print("Failed to save entry.");
+      return;
+    }
+    log_entry_create(new_entry, log_entry_handler->log_name);
+    log_entry_free(new_entry);
+    log_free(log);
+  }
+  else {
+    log_entry_update(&log_entry_handler->log_entry, log_entry_handler->log_name, message); 
+  }
   g_print("Save Log Entry Clicked!\n");
+  g_free(message);
 }
 
 void new_log_entry_click(GtkButton *button, gpointer user_data) {
