@@ -1,6 +1,6 @@
 CC=gcc #compiler
 
-CFLAGS=-Wall -Wextra -pedantic -std=c99 -g -D_GNU_SOURCE
+CFLAGS=-Wall -Wextra -pedantic -std=c99 -g 
 
 PKG=$(shell pkg-config --libs gtk4)
 PKG_FLAGS=$(shell pkg-config --cflags gtk4 | sed 's/-I/-isystem /g')

@@ -4,6 +4,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <unistd.h>
 
 const char *LOG_DIR = "logs/";
 const char *FILE_EXTENSION = ".txt";
