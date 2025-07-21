@@ -5,12 +5,15 @@
 #include <dirent.h>
 #include <stdio.h>
 
+const char *LOG_DIR = "logs/";
+const char *FILE_EXTENSION = ".txt";
+
 FILE *open_log_file(char *log_name) {
-  char *filename =  malloc(sizeof(char) * (strlen("logs/") + strlen(log_name)+1));
+  char *filename =  malloc(sizeof(char) * (strlen(LOG_DIR) + strlen(log_name)+1));
   if(filename == NULL) {
     return NULL; 
   }
-  strcpy(filename, "logs/");
+  strcpy(filename, LOG_DIR);
   strcat(filename, log_name);
   FILE *file = fopen(filename, "a+");
   if(file == NULL) {
@@ -21,9 +24,35 @@ FILE *open_log_file(char *log_name) {
   return file;
 }
 
+void save_log_to_file(log_t *log) {
+  size_t buffer = strlen(LOG_DIR) + strlen(log->name) + 1;
+  char filename[buffer];
+  strcpy(filename, LOG_DIR);
+  strcat(filename, log->name);
+  FILE *same_name_check = fopen(filename, "r");
+  if(same_name_check != NULL) {
+    fclose(same_name_check);
+    printf("A file with this name already exists.\n");
+    return;
+  }
+
+  FILE *log_file = fopen(filename, "w");
+  if(log_file == NULL) {
+    printf("Could not create log file.\n");
+  }
+  fflush(log_file);
+  fsync(fileno(log_file));
+  fclose(log_file);
+}
+
 log_t *log_create(char *name) {
   log_t *log = log_new();
-  log_name_set(log, name);
+  size_t buffer = strlen(name) + strlen(FILE_EXTENSION) + 1;
+  char filename[buffer];
+  strcpy(filename, name);
+  strcat(filename, FILE_EXTENSION);
+  log_name_set(log, filename);
+  save_log_to_file(log);  
   return log;
 }
 
@@ -51,13 +80,13 @@ void log_entry_list_get(log_t *log) {
 }
 
 log_list_t *log_list_get() {
-  static const char *LOG_DIR = "logs/";
   struct dirent *de;
   DIR *dr = opendir(LOG_DIR);
   if(dr == NULL) {
     printf("Could not open logs directory\n");
     return NULL;
   }
+  rewinddir(dr);
   size_t capacity = 10;
   char **log_names = calloc(capacity, sizeof(char *));
   if(log_names == NULL) {
@@ -80,6 +109,7 @@ log_list_t *log_list_get() {
 
      strcpy(name, de->d_name);
      memcpy(&log_names[filecount],  &name, sizeof(char *));
+      
      filecount++;
   }
   closedir(dr);
@@ -123,6 +153,7 @@ log_t *log_new() {
 void log_name_set(log_t *log, const char *name) {
   if(log == NULL || name == NULL) { return; }
   log->name = malloc(sizeof(char) * strlen(name) + 1);
+
   if(log->name == NULL) {
     return;
   }

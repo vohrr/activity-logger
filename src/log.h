@@ -1,5 +1,8 @@
 #include <stdlib.h>
 
+extern const char *LOG_DIR;
+extern const char *FILE_EXTENSION;
+
 typedef struct LogList {
   size_t capacity;
   size_t filecount;

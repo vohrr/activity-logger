@@ -86,11 +86,6 @@ void render_action_buttons(GtkWidget *stack_box_widget, log_entry_handler_t *log
 void new_log_click(GtkWidget *create_log_button_widget, gpointer main_stack) {
   void_widget(create_log_button_widget);
   gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "viewlogpage");
-  log_t *first_log = log_create("Test Log");
-  if (first_log == NULL) {
-    g_print("Failed to create log\n");
-  }
-  log_free(first_log);
 }
 
 void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
@@ -103,7 +98,7 @@ void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
   gtk_stack_set_visible_child(GTK_STACK(main_stack), log_list_page_box_widget);
   GtkBox *log_list_page_box = GTK_BOX(log_list_page_box_widget);
 
-  if(gtk_widget_get_first_child(log_list_page_box_widget) != gtk_widget_get_last_child(log_list_page_box_widget)) { return; }
+  clear_child_elements(log_list_page_box_widget, BUTTON);
 
   log_list_t *log_list = log_list_get();
   if(log_list != NULL) {
@@ -132,9 +127,20 @@ void view_log_click(GtkWidget *log_entry_widget, gpointer main_stack) {
   render_new_log_entry_button(log_entry_list_box_widget, label, main_stack);
 }
 
-void save_log_click(GtkButton *save_button, gpointer user_data) {
-  (void)save_button;
-  (void)user_data;
+void save_log_click(GtkWidget *save_button, gpointer main_stack) {
+  GtkWidget *button_grid = gtk_widget_get_parent(save_button);
+  GtkWidget *log_name_entry = gtk_widget_get_prev_sibling(button_grid);
+  GtkEntryBuffer *log_name_entry_buffer = gtk_entry_get_buffer(GTK_ENTRY(log_name_entry));
+  gchar *log_name_buffer_text = gtk_entry_buffer_get_text(log_name_entry_buffer);
+  
+  log_t *log = log_create(log_name_buffer_text);
+  if (log == NULL) {
+    g_print("Failed to create log\n");
+  }
+  g_print("Log saved.");
+  
+  log_list_click(NULL, main_stack);
+  log_free(log);
 }
 
 void delete_log_click(GtkButton *delete_button, gpointer user_data) {

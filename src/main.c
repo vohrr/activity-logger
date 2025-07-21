@@ -22,17 +22,19 @@ static void activate(GtkApplication *app) {
   GObject *button = gtk_builder_get_object(builder, "newlog");
   g_signal_connect(button, "clicked", G_CALLBACK(new_log_click), stack);
 
-  button = gtk_builder_get_object(builder, "openlog");
-  g_signal_connect(button, "clicked", G_CALLBACK(log_list_click), stack);
-
   button = gtk_builder_get_object(builder, "savelog");
-  g_signal_connect(button, "clicked", G_CALLBACK(save_log_click), NULL);
+  g_signal_connect(button, "clicked", G_CALLBACK(save_log_click), stack);
   
   button = gtk_builder_get_object(builder, "deletelog");
   g_signal_connect(button, "clicked", G_CALLBACK(delete_log_click), NULL);
 
+  button = gtk_builder_get_object(builder, "openlog");
+  g_signal_connect(button, "clicked", G_CALLBACK(log_list_click), stack);
+  
   gtk_widget_set_visible (GTK_WIDGET(window), TRUE);
   g_object_unref(builder);
+
+  log_list_click(GTK_WIDGET(button), stack);
 }
 
 int main(int argc, char **argv) {

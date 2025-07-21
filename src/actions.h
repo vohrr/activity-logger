@@ -10,7 +10,7 @@ typedef enum ELEMENT_TYPE {
 
 void new_log_click(GtkWidget *create_log_button_widget, gpointer main_stack); 
 void view_log_click(GtkWidget *log_entry_widget, gpointer main_stack); 
-void save_log_click(GtkButton *save_button, gpointer user_data); 
+void save_log_click(GtkWidget *save_button, gpointer user_data); 
 void delete_log_click(GtkButton *delete_button, gpointer user_data);
 void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack); 
 
