@@ -106,7 +106,6 @@ void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
     while(i < log_list->filecount) {
       char *log_name = log_list->log_names[i];
       if(log_name != NULL) { 
-        g_print("Log: %s\n", log_name);
         GtkWidget *log_button = gtk_button_new_with_label(log_name);
         gtk_box_append(log_list_page_box, log_button); 
         g_signal_connect(log_button, "clicked", G_CALLBACK(view_log_click), main_stack);
@@ -137,7 +136,6 @@ void save_log_click(GtkWidget *save_button, gpointer main_stack) {
   if (log == NULL) {
     g_print("Failed to create log\n");
   }
-  g_print("Log saved.");
   
   log_list_click(NULL, main_stack);
   log_free(log);
