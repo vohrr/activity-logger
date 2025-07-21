@@ -143,11 +143,6 @@ void save_log_click(GtkWidget *save_button, gpointer main_stack) {
   log_free(log);
 }
 
-void delete_log_click(GtkButton *delete_button, gpointer user_data) {
-  (void)delete_button;
-  (void)user_data;
-}
-
 void log_entry_click(GtkButton *log_entry_list_button, gpointer main_stack) {
   gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "logentryview"); 
   log_entry_t *log_entry = g_object_get_data(G_OBJECT(log_entry_list_button), "entry");

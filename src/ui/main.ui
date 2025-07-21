@@ -71,17 +71,6 @@
                               </layout>
                             </object>
                           </child>
-                        <child>
-                          <object id="deletelog" class="GtkButton">
-                            <property name="label">Delete</property>
-                            <property name="name">deletelog</property>
-                            <layout>
-                              <property name="column">0</property>
-                              <property name="row">2</property>
-                              <property name="column-span">2</property>
-                              </layout>
-                            </object>
-                          </child>
                         </object>
                       </child>
                     </object>

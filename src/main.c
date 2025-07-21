@@ -25,9 +25,6 @@ static void activate(GtkApplication *app) {
   button = gtk_builder_get_object(builder, "savelog");
   g_signal_connect(button, "clicked", G_CALLBACK(save_log_click), stack);
   
-  button = gtk_builder_get_object(builder, "deletelog");
-  g_signal_connect(button, "clicked", G_CALLBACK(delete_log_click), NULL);
-
   button = gtk_builder_get_object(builder, "openlog");
   g_signal_connect(button, "clicked", G_CALLBACK(log_list_click), stack);
   
