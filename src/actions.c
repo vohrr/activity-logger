@@ -39,12 +39,6 @@ void render_log_entries(GtkWidget *stack_box_widget, char *label, gpointer main_
   }
 }
 
-void return_to_log_click(GtkWidget *return_button_widget, gpointer main_stack) {
-  log_entry_handler_t *log_entry_handler = g_object_get_data(G_OBJECT(return_button_widget), "entry_handler");
-  gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "logentrylist"); 
-  log_entry_handler_free(log_entry_handler);
-}
-
 void render_new_log_entry_button(GtkWidget *stack_box_widget, char *log_name, gpointer main_stack) {
   GtkBox *stack_box = GTK_BOX(stack_box_widget);
   GtkWidget *new_log_entry_button = gtk_button_new_with_label("Add New Entry");
@@ -201,6 +195,12 @@ void new_log_entry_click(GtkButton *new_log_entry_button, gpointer main_stack) {
   render_message_box(stack_box, NULL);
   log_entry_handler_t *log_entry_handler = log_entry_handler_new(log_name, NULL); 
   render_action_buttons(stack_box_widget, log_entry_handler, main_stack);
+}
+
+void return_to_log_click(GtkWidget *return_button_widget, gpointer main_stack) {
+  log_entry_handler_t *log_entry_handler = g_object_get_data(G_OBJECT(return_button_widget), "entry_handler");
+  gtk_stack_set_visible_child_name(GTK_STACK(main_stack), "logentrylist"); 
+  log_entry_handler_free(log_entry_handler);
 }
 
 
