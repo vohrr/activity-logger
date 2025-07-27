@@ -199,9 +199,9 @@ log_entry_t *log_entry_new(size_t id, char *message) {
   log_entry->datetime = malloc(sizeof(char)*strlen(datetime)+1);
   strcpy(log_entry->datetime, datetime);
 
-  log_entry->message = malloc(sizeof(char)*strlen(message)+2);
+  log_entry->message = malloc(sizeof(char)*strlen(message)+1);
 
-  size_t buffer = strlen(message) + 10;
+  size_t buffer = strlen(message) + 2*strlen(ENTRY_DELIMITER)+strlen(MULTI_LINE_DELIMITER)+1;
   char delimited_message[buffer];
   strcpy(delimited_message, message);
   strcat(delimited_message, MULTI_LINE_DELIMITER);

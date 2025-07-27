@@ -14,9 +14,13 @@ void render_log_entries(GtkWidget *stack_box_widget, char *label, gpointer main_
   size_t buffer = strlen(label) + 10;
   char label_prefix[buffer];
   strcpy(label_prefix,"Viewing ");
+
   gtk_label_set_label(GTK_LABEL(box_label), strcat(label_prefix, label));
   log_t *log = log_load(label);
-  
+
+  GtkWidget *open_log_widget = gtk_widget_get_prev_sibling(GTK_WIDGET(main_stack));
+  g_object_set_data(G_OBJECT(open_log_widget), "log", log);
+
   if (log == NULL) {
     g_print("Failed to load data for %s\n", label);
     return;
@@ -83,7 +87,10 @@ void new_log_click(GtkWidget *create_log_button_widget, gpointer main_stack) {
 }
 
 void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
-  void_widget(open_log_button_widget);
+  log_t *log = g_object_get_data(G_OBJECT(open_log_button_widget), "log");
+  if(log != NULL) {
+    log_free(log);
+  }
 
   GtkWidget *log_list_page_box_widget = gtk_stack_get_child_by_name(GTK_STACK(main_stack), "loglistpage");
   if(log_list_page_box_widget == NULL) {
@@ -107,14 +114,14 @@ void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
       i++;
     }
   }
-
   log_list_free(log_list);
 }
 
 void view_log_click(GtkWidget *log_entry_widget, gpointer main_stack) {
   const char* label = gtk_button_get_label(GTK_BUTTON(log_entry_widget));
+  
   GtkWidget *log_entry_list_box_widget = gtk_stack_get_child_by_name(GTK_STACK(main_stack), "logentrylist");
-
+  
   clear_child_elements(log_entry_list_box_widget, BUTTON);
   render_log_entries(log_entry_list_box_widget, label, main_stack);
   render_new_log_entry_button(log_entry_list_box_widget, label, main_stack);
@@ -212,6 +219,7 @@ void clear_child_elements(GtkWidget *stack_box_widget, element_type element_type
     switch(element_type) {
       case BUTTON:
         if(GTK_IS_BUTTON(child)) { gtk_widget_unparent(child); }
+
         break;  
 
       case SCROLLED_WINDOW:
