@@ -80,6 +80,7 @@ void log_entry_list_get(log_t *log) {
      strcpy(file_entry, ln);
      //handle multilines
      while(strstr(file_entry, MULTI_LINE_DELIMITER) == NULL) {
+        //save current line in buffer and append next line
         strcat(file_entry, fgets(ln, sizeof(ln), file)); 
     }
     log_entry_t *log_entry =  log_entry_load(file_entry); 
@@ -214,14 +215,12 @@ log_entry_t *log_entry_load(char *file_entry) {
   if(entry == NULL) {
     return NULL;
   }
-  //will probably have to change how this works entirely to support multi-line entries
-  const char *delim = ENTRY_DELIMITER;
   //id
   char *token;
-  token = strtok(file_entry, delim);
+  token = strtok(file_entry, ENTRY_DELIMITER);
   entry->id = strtoul(token, NULL, 10);
   //date
-  token = strtok(NULL, delim);
+  token = strtok(NULL, ENTRY_DELIMITER);
   entry->datetime = malloc(sizeof(char)*strlen(token)+1);
   strcpy(entry->datetime, token);
   //message
