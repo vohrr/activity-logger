@@ -8,6 +8,8 @@
 
 const char *LOG_DIR = "logs/";
 const char *FILE_EXTENSION = ".txt";
+const char *ENTRY_DELIMITER = "|~|";
+const char *MULTI_LINE_DELIMITER = "|~~|";
 
 FILE *open_log_file(char *log_name) {
   char *filename =  malloc(sizeof(char) * (strlen(LOG_DIR) + strlen(log_name)+1));
@@ -69,18 +71,25 @@ void log_entry_list_get(log_t *log) {
     return;
   }
   FILE *file = open_log_file(log->name);
-
+  //this is far too brittle. implement checks and error handling 
   size_t buffer = 4096;
   char ln[buffer];
   while(fgets(ln, sizeof(ln), file) != NULL) {
-    log_entry_t *entry =  log_entry_load(ln); 
-    log_entry_add(log, entry, sizeof(size_t)*(strlen(entry->message)+strlen(entry->datetime)+1));
+     size_t message_buffer = 4096;
+     char file_entry[message_buffer];
+     strcpy(file_entry, ln);
+     //handle multilines
+     while(strstr(file_entry, MULTI_LINE_DELIMITER) == NULL) {
+        strcat(file_entry, fgets(ln, sizeof(ln), file)); 
+    }
+    log_entry_t *log_entry =  log_entry_load(file_entry); 
+    log_entry_add(log, log_entry, sizeof(size_t)*(strlen(log_entry->message)+strlen(log_entry->datetime)+1));
   }
 
   fclose(file);
 }
 
-log_list_t *log_list_get() {
+log_list_t *log_list_get(void) {
   struct dirent *de;
   DIR *dr = opendir(LOG_DIR);
   if(dr == NULL) {
@@ -140,7 +149,7 @@ void log_list_free(log_list_t *log_list) {
   free(log_list);
 }
 
-log_t *log_new() {
+log_t *log_new(void) {
   log_t *log = malloc(sizeof(log_t));
   if(log == NULL) {
     return NULL; 
@@ -165,11 +174,11 @@ void log_entry_add(log_t *log, log_entry_t *entry, size_t entry_size) {
   if (log->entries == NULL) {
     log->entries = calloc(1, entry_size);
     memcpy(&log->entries[0],  &entry, sizeof(log_entry_t));
-    log->capacity = sizeof(entry);
+    log->capacity = entry_size; 
     log->size = 1;
   }
   else {
-    log->capacity += sizeof(entry);
+    log->capacity += entry_size;
     log->entries = realloc(log->entries, sizeof(size_t)*log->capacity);
     memcpy(&log->entries[log->size], &entry, sizeof(log_entry_t));
     log->size += 1;
@@ -189,9 +198,14 @@ log_entry_t *log_entry_new(size_t id, char *message) {
   log_entry->datetime = malloc(sizeof(char)*strlen(datetime)+1);
   strcpy(log_entry->datetime, datetime);
 
-  log_entry->message = malloc(sizeof(char)*strlen(message)+1);
-  strcpy(log_entry->message, message);
-  
+  log_entry->message = malloc(sizeof(char)*strlen(message)+2);
+
+  size_t buffer = strlen(message) + 10;
+  char delimited_message[buffer];
+  strcpy(delimited_message, message);
+  strcat(delimited_message, MULTI_LINE_DELIMITER);
+
+  strcpy(log_entry->message, delimited_message);
   return log_entry;
 }
 
@@ -200,7 +214,8 @@ log_entry_t *log_entry_load(char *file_entry) {
   if(entry == NULL) {
     return NULL;
   }
-  const char *delim = "|";
+  //will probably have to change how this works entirely to support multi-line entries
+  const char *delim = ENTRY_DELIMITER;
   //id
   char *token;
   token = strtok(file_entry, delim);
@@ -210,7 +225,7 @@ log_entry_t *log_entry_load(char *file_entry) {
   entry->datetime = malloc(sizeof(char)*strlen(token)+1);
   strcpy(entry->datetime, token);
   //message
-  token = strtok(NULL, delim);
+  token = strtok(NULL, MULTI_LINE_DELIMITER);
   entry->message = malloc(sizeof(char)*strlen(token)+1);
   strcpy(entry->message, token);
   return entry;
@@ -218,7 +233,9 @@ log_entry_t *log_entry_load(char *file_entry) {
 
 void log_entry_create(log_entry_t *log_entry, char *log_name) {
   FILE *file = open_log_file(log_name);
-  fprintf(file, "%ld|%s|%s\n", log_entry->id, log_entry->datetime, log_entry->message);
+  fprintf(file, "%ld%s%s%s%s%s\n", log_entry->id,
+          ENTRY_DELIMITER, log_entry->datetime, ENTRY_DELIMITER,
+          log_entry->message, MULTI_LINE_DELIMITER);
   fclose(file);
 }
 

@@ -2,6 +2,8 @@
 
 extern const char *LOG_DIR;
 extern const char *FILE_EXTENSION;
+extern const char *ENTRY_DELIMITER;
+extern const char *MULTI_LINE_DELIMITER;
 
 typedef struct LogList {
   size_t capacity;
