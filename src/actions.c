@@ -87,9 +87,11 @@ void new_log_click(GtkWidget *create_log_button_widget, gpointer main_stack) {
 }
 
 void log_list_click(GtkWidget *open_log_button_widget, gpointer main_stack) {
-  log_t *log = g_object_get_data(G_OBJECT(open_log_button_widget), "log");
-  if(log != NULL) {
-    log_free(log);
+  if (open_log_button_widget != NULL) {
+    log_t *log = g_object_get_data(G_OBJECT(open_log_button_widget), "log");
+    if (log != NULL) {
+      log_free(log);
+    }
   }
 
   GtkWidget *log_list_page_box_widget = gtk_stack_get_child_by_name(GTK_STACK(main_stack), "loglistpage");
